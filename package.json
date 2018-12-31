@@ -1,0 +1,32 @@
+{
+  "name": "a-bot",
+  "version": "1.0.0",
+  "description": "this is just aBot for Discord, written in typescript designed to take over the world.",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc --p tsconfig.json",
+    "start": "node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.simplintho.com/JamieVangeysel/abot.git"
+  },
+  "keywords": [
+    "abot",
+    "world",
+    "domination",
+    "domination",
+    "takeover",
+    "love"
+  ],
+  "author": "JamieVangeysel",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^11.4.2",
+    "typescript": "^3.2.2"
+  },
+  "devDependencies": {
+    "@types/node": "^10.12.18"
+  }
+}

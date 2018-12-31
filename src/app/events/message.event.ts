@@ -11,7 +11,7 @@ import { SayCommandHandler } from "../commands/say.command";
 
 export const MessageEvent = {
   fire(bot: aBot, config: BotConfig, message: Message): Promise<Message | Message[] | Collection<string, Message>> {
-    if (message.author.bot || message.channel.type === 'dm' && message.content.slice(0, 2) === config.prefix) {
+    if (message.author.bot || message.channel.type === 'dm' || message.content.slice(0, 2) !== config.prefix) {
       // include error message? console.debug('help me!');
       return;
     }
@@ -43,11 +43,14 @@ export const MessageEvent = {
 
       case 'terminate':
       case 'kill':
+        const allowedRoles: Array<string> = ['Administrator'];
+        if (!message.member.roles.some(role => allowedRoles.includes(role.name)))
+          return message.reply("Sorry, you don't have permissions to use this!");
         bot.kill();
         return;
 
       default:
-        return message.channel.send(`unknown command, type ${config.prefix}help for a list of available commands`);
+        return message.channel.send(`Unknown command, type ${config.prefix}help for a list of available commands`);
     }
 
   }

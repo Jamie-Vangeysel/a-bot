@@ -55,14 +55,23 @@ export class aBot {
     });
   }
 
+  /**
+   * Kill the bot
+   */
   public async kill() {
     await this._bot.destroy();
   }
 
+  /**
+   * get the Client socket
+   */
   public get client(): Client {
     return this._bot;
   }
 
+  /**
+   * Get runtime of the process
+   */
   public get runtime(): string {
     let totalseconds: number = Math.floor((new Date().getTime() - this._startDate.getTime()) / 1000);
     let totalminutes = 0;

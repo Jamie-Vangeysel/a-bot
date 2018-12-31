@@ -48,9 +48,9 @@ export class aBot {
     // login with token
     this._bot.login(this._config.token).then(e => {
       console.debug('login ok!');
-    }, err => {
+    }, (err: any) => {
       console.warn(`error ${err} while loggin in!`);
-    }).catch(err => {
+    }).catch((err: any) => {
       console.error(err);
     });
   }
@@ -77,19 +77,19 @@ export class aBot {
     let totalminutes = 0;
     let totalhours = 0;
 
-    if ( totalseconds > 60 ) {
+    if (totalseconds > 60) {
       totalminutes = Math.floor(totalseconds / 60);
-      totalseconds = totalseconds - ( totalminutes * 60 );
+      totalseconds = totalseconds - (totalminutes * 60);
     }
 
-    if ( totalminutes > 60 ) {
-      totalhours = Math.floor(totalhours / 60);
-      totalminutes = totalminutes - ( totalhours * 60 );
+    if (totalminutes > 60) {
+      totalhours = Math.floor(totalminutes / 60);
+      totalminutes = totalminutes - (totalhours * 60);
     }
 
-    const secondsstring: string = (totalseconds > 0 ) ? ( totalseconds === 1 ? '1 second' : `${totalseconds} seconds` ) : '';
-    const minutesstring: string = (totalminutes > 0 ) ? ( totalminutes === 1 ? '1 minute ' : `${totalminutes} minutes ` ) : '';
-    const hoursstring: string = (totalhours > 0 ) ? ( totalhours === 1 ? '1 hour ' : `${totalminutes} hours ` ) : '';
+    const secondsstring: string = (totalseconds > 0) ? (totalseconds === 1 ? '1 second' : `${totalseconds} seconds`) : '';
+    const minutesstring: string = (totalminutes > 0) ? (totalminutes === 1 ? '1 minute ' : `${totalminutes} minutes `) : '';
+    const hoursstring: string = (totalhours > 0) ? (totalhours === 1 ? '1 hour ' : `${totalminutes} hours `) : '';
 
     return `${hoursstring}${minutesstring}${secondsstring}`;
   }

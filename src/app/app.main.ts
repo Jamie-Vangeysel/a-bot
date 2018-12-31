@@ -46,8 +46,8 @@ export class aBot {
    */
   public start() {
     // login with token
-    this._bot.login(this._config.token).then(e => {
-      console.debug('login ok!');
+    this._bot.login(this._config.token).then((message: string) => {
+      console.debug('login ok!', message);
     }, (err: any) => {
       console.warn(`error ${err} while loggin in!`);
     }).catch((err: any) => {

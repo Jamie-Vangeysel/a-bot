@@ -8,6 +8,8 @@ import { HelpCommandHandler } from "../commands/help.command";
 import { PurgeCommandHandler } from "../commands/purge.command";
 import { PingCommandHandler } from "../commands/ping.command";
 import { SayCommandHandler } from "../commands/say.command";
+import { BalanceCommandHandler } from "../commands/balance.command";
+import { ProfileCommandHandler } from "../commands/profile.command";
 
 export const MessageEvent = {
   fire(bot: aBot, config: BotConfig, message: Message): Promise<Message | Message[] | Collection<string, Message>> {
@@ -24,6 +26,12 @@ export const MessageEvent = {
     switch (command) {
       case 'help':
         return HelpCommandHandler(bot, config, message);
+
+      case 'balance':
+        return BalanceCommandHandler(config, message);
+
+      case 'profile':
+        return ProfileCommandHandler(bot, config, message);
 
       case 'say':
         return SayCommandHandler(message, args);

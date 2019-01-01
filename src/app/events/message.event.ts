@@ -11,13 +11,15 @@ import { SayCommandHandler } from "../commands/say.command";
 
 export const MessageEvent = {
   fire(bot: aBot, config: BotConfig, message: Message): Promise<Message | Message[] | Collection<string, Message>> {
-    if (message.author.bot || message.channel.type === 'dm' || message.content.slice(0, 2) !== config.prefix) {
+    if (message.author.bot || message.channel.type === 'dm' || message.content.slice(0, config.prefix.length) !== config.prefix) {
       // include error message? console.debug('help me!');
       return;
     }
 
-    const args: Array<string> = message.content.slice(config.prefix.length).trim().split(/ +/g); // splits the arguments and removes the prefic from the command
-    const command: string = args.shift().toLowerCase(); // get the first element of the argument array, stores it in a const and removes it from the source array
+    // splits the arguments and removes the prefic from the command
+    const args: Array<string> = message.content.slice(config.prefix.length).trim().split(/ +/g);
+    // get the first element of the argument array, stores it in a const and removes it from the source array
+    const command: string = args.shift().toLowerCase();
 
     switch (command) {
       case 'help':

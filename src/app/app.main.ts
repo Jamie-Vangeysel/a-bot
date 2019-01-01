@@ -1,6 +1,6 @@
 import { Client } from "discord.js";
 import { botEventListener } from "./events/listener";
-import { BotConfig, AppConfig } from "./app.config";
+import { BotConfig } from "./app.config";
 
 /**
  * This is the main class of the project containing bootstrap logic for our bot.
@@ -10,9 +10,9 @@ export class aBot {
   private _bot: Client;
   private _startDate: Date;
 
-  constructor() {
+  constructor(config: BotConfig) {
     console.debug('aBot has been initialized!');
-    this._config = AppConfig;
+    this._config = config;
     this._startDate = new Date();
 
     // call the initialize function
@@ -76,6 +76,7 @@ export class aBot {
     let totalseconds: number = Math.floor((new Date().getTime() - this._startDate.getTime()) / 1000);
     let totalminutes = 0;
     let totalhours = 0;
+    let totaldays = 0;
 
     if (totalseconds > 60) {
       totalminutes = Math.floor(totalseconds / 60);
@@ -87,10 +88,16 @@ export class aBot {
       totalminutes = totalminutes - (totalhours * 60);
     }
 
+    if (totalhours > 24) {
+      totaldays = Math.floor(totalhours / 24);
+      totalhours = totalhours - (totaldays * 24);
+    }
+
     const secondsstring: string = (totalseconds > 0) ? (totalseconds === 1 ? '1 second' : `${totalseconds} seconds`) : '';
     const minutesstring: string = (totalminutes > 0) ? (totalminutes === 1 ? '1 minute ' : `${totalminutes} minutes `) : '';
-    const hoursstring: string = (totalhours > 0) ? (totalhours === 1 ? '1 hour ' : `${totalminutes} hours `) : '';
+    const hoursstring: string = (totalhours > 0) ? (totalhours === 1 ? '1 hour ' : `${totalhours} hours `) : '';
+    const daysstring: string = (totaldays > 0) ? (totaldays === 1 ? '1 day ' : `${totaldays} days `) : '';
 
-    return `${hoursstring}${minutesstring}${secondsstring}`;
+    return `${daysstring}${hoursstring}${minutesstring}${secondsstring}`;
   }
 }

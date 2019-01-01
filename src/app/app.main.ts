@@ -1,6 +1,7 @@
 import { Client } from "discord.js";
 import { botEventListener } from "./events/listener";
 import { BotConfig } from "./app.config";
+import * as fs from 'fs';
 
 /**
  * This is the main class of the project containing bootstrap logic for our bot.
@@ -62,11 +63,22 @@ export class aBot {
     await this._bot.destroy();
   }
 
+  public saveConfiguratiom() {
+    fs.writeFile('./config.json', Buffer.from(JSON.stringify(this._config)), (err) => {
+      if (err) throw err;
+      console.debug('saved configuration');
+    });
+  }
+
   /**
    * get the Client socket
    */
   public get client(): Client {
     return this._bot;
+  }
+
+  public get config(): BotConfig {
+    return this._config;
   }
 
   /**

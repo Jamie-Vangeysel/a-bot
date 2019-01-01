@@ -2,7 +2,7 @@
  * This is the entry point of the application, in here we start our instance of the bot.
  */
 import { aBot } from "./app/app.main";
-import { AppConfig } from "./app/app.config";
+import { DefaultConfig } from "./app/app.config";
 import * as fs from 'fs';
 
 let bot: aBot;
@@ -18,10 +18,10 @@ fs.exists('./config.json', (exists: boolean) => {
     });
   } else {
     // create file with default config attached
-    fs.writeFile('./config.json', Buffer.from(JSON.stringify(AppConfig)), (err) => {
+    fs.writeFile('./config.json', Buffer.from(JSON.stringify(DefaultConfig)), (err) => {
       if (err) throw err;
       console.debug('config created');
-      bot = new aBot(AppConfig);
+      bot = new aBot(DefaultConfig);
     });
   }
 });

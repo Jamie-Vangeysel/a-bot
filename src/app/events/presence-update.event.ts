@@ -1,21 +1,30 @@
-import { Client, GuildMember, TextChannel, RichEmbed, GuildChannel } from "discord.js";
-import { BotConfig } from "../app.config";
+import { GuildMember, TextChannel, GuildChannel } from "discord.js";
 
 export const PresenceUpdateEvent = {
-  async fire(bot: Client, config: BotConfig, member: { old: GuildMember, new: GuildMember }): Promise<any> {
+  async fire(member: { old: GuildMember, new: GuildMember }): Promise<any> {
     const generalChannel = member.new.guild.channels.find((channel: GuildChannel) => channel.name === 'general');
 
     if (generalChannel && (generalChannel instanceof TextChannel)) {
-      /* const embed = new RichEmbed()
-        .setDescription(`${member.new.displayName} has changed presence from ${member.old.presence.status} to ${member.new.presence.status}.`)
-        .setColor(config.color); */
-        if ( member.old.presence.game ) {
-          await generalChannel.send(`${member.new.displayName} is no longer playing ${member.old.presence.game.name}.`);
-        }
-        if ( member.new.presence.game ) {
-          return generalChannel.send(`${member.new.displayName} is now playing ${member.new.presence.game.name}.`);
-        }
-      return generalChannel.send(`${member.new.displayName} is now ${member.new.presence.status}.`);
+      // if old presence has a game set, user is no longer playing
+      if (member.old.presence.game) {
+        const timeplayed = (member.old.presence.game.timestamps.end.getTime() - member.old.presence.game.timestamps.start.getTime()) / 1000 / 60
+        await generalChannel.send(`${member.new.displayName} is no longer playing ${member.old.presence.game.name} [${timeplayed.toPrecision(2)}min].`);
+      }
+      // if new presence has a game set the user started playing
+      if (member.new.presence.game) {
+        return generalChannel.send(`${member.new.displayName} is now playing ${member.new.presence.game.name}.`);
+      }
+      // check if the new status does not equal the old status, because well ...
+      /** [22:20] BOTaBot: Wraptor is now dnd.
+          [22:22] BOTaBot: Wraptor is now dnd.
+          [22:24] BOTaBot: Wraptor is now dnd.
+       */
+      if (member.new.presence.status !== member.old.presence.status) {
+        return generalChannel.send(`${member.new.displayName} is now ${member.new.presence.status}.`);
+      }
+
+      // do nothing, just chill.
+      return null;
     } else {
       console.error('error while sending message in welcome chat!');
     }

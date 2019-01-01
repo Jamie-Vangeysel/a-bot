@@ -19,7 +19,7 @@ export const botEventListener = {
     });
 
     bot.client.on('presenceUpdate', async (oldMember: GuildMember, newMember: GuildMember) => {
-      await PresenceUpdateEvent.fire(bot.client, config, { old: oldMember, new: newMember });
+      await PresenceUpdateEvent.fire({ old: oldMember, new: newMember });
     });
 
     bot.client.on('ready', async () => {

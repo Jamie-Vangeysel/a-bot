@@ -9,7 +9,6 @@ export class BotConfig {
   public token: string;
   public prefix: string;
   public color: string;
-  public version?: string = '1.0.2';
   public guilds: BotGuildConfig[];
 }
 

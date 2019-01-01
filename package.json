@@ -1,6 +1,6 @@
 {
   "name": "a-bot",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "this is just aBot for Discord, written in typescript designed to take over the world.",
   "main": "dist/index.js",
   "scripts": {

@@ -10,6 +10,6 @@ export const BotInfoCommandHandler = (bot: aBot, config: BotConfig, message: Mes
     .addField('Botname', bot.client.user.username)
     .addField('Created On', bot.client.user.createdAt)
     .addField('Runtime', `${bot.runtime}`)
-    .addField('Version', config.version);
+    .addField('Version', process.env.npm_package_version);
   return message.channel.send(botembed);
 };

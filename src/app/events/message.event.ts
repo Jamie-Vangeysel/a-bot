@@ -46,7 +46,7 @@ export const MessageEvent = {
         return BotInfoCommandHandler(bot, config, message);
 
       case 'version':
-        return VersionCommandHandler(bot, config, message);
+        return VersionCommandHandler(message);
 
       case 'purge':
         return PurgeCommandHandler(message, args);

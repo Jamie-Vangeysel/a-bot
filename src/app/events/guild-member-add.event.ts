@@ -1,5 +1,5 @@
 import { GuildMember, TextChannel, RichEmbed, GuildChannel, Role } from "discord.js";
-import { BotConfig } from "../app.config";
+import { BotConfig, BotGuildConfig } from "../app.config";
 
 export const GuildMemberAddEvent = {
   async fire(config: BotConfig, member: GuildMember): Promise<GuildMember> {
@@ -17,7 +17,26 @@ export const GuildMemberAddEvent = {
       console.error('error while sending message in welcome chat!');
     }
 
+
+    const confGuild: BotGuildConfig = config.guilds.find(e => e.id === member.guild.id);
+    confGuild.members.push({
+      id: member.id,
+      name: member.displayName,
+      title: '',
+      description: 'hi there OwO!',
+      experience: 0,
+      level: 0,
+      reputation: 0,
+      cash: 100,
+      bank: 0
+    });
+
     const role = member.guild.roles.find((role: Role) => role.name === 'new');
-    return member.addRole(role);
+    if (role) {
+      return member.addRole(role);
+    } else {
+      console.error('new role does not exist!');
+      return;
+    }
   }
 };

@@ -1,17 +1,32 @@
-import { Message, GuildMember } from "discord.js";
+import { Message, GuildMember, Guild, User } from "discord.js";
 import { BotConfig } from "../app.config";
+import { aBot } from "../app.main";
 import { ReadyEvent } from "./ready.event";
 import { MessageEvent } from "./message.event";
-import { GuildMemberAddEvent } from "./guild-member-add.event";
 import { DisconnectEvent } from "./disconnect.event";
-import { aBot } from "../app.main";
 import { PresenceUpdateEvent } from "./presence-update.event";
+import { GuildMemberAddEvent } from "./guild-member-add.event";
+import { GuildMemberRemoveEvent } from "./guild-member-remove.event";
+import { GuildMemberBanAddEvent } from "./guild-member-ban-add.event";
+import { GuildMemberBanRemoveEvent } from "./guild-member-ban-remove.event";
 
 export const botEventListener = {
   attach(bot: aBot, config: BotConfig): void {
     // attach all event listeners to the client
     bot.client.on('guildMemberAdd', async (member: GuildMember) => {
       await GuildMemberAddEvent.fire(config, member);
+    });
+
+    bot.client.on('guildMemberRemove', async (member: GuildMember) => {
+      await GuildMemberRemoveEvent.fire(config, member);
+    });
+
+    bot.client.on('guildBanAdd', async (guild: Guild, user: User) => {
+      await GuildMemberBanAddEvent.fire(config, guild, user);
+    });
+
+    bot.client.on('guildBanRemove', async (guild: Guild, user: User) => {
+      await GuildMemberBanRemoveEvent.fire(config, guild, user);
     });
 
     bot.client.on('message', async (message: Message) => {

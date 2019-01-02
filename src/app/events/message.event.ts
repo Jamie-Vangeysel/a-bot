@@ -10,6 +10,7 @@ import { PingCommandHandler } from "../commands/ping.command";
 import { SayCommandHandler } from "../commands/say.command";
 import { BalanceCommandHandler } from "../commands/balance.command";
 import { ProfileCommandHandler } from "../commands/profile.command";
+import { BanCommandHandler } from "../commands/ban.command";
 
 export const MessageEvent = {
   fire(bot: aBot, config: BotConfig, message: Message): Promise<Message | Message[] | Collection<string, Message>> {
@@ -44,6 +45,9 @@ export const MessageEvent = {
 
       case 'botinfo':
         return BotInfoCommandHandler(bot, config, message);
+
+      case 'ban':
+        return BanCommandHandler(message, args);
 
       case 'version':
         return VersionCommandHandler(message);

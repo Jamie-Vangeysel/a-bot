@@ -1,5 +1,4 @@
 import { Message, Collection } from "discord.js";
-import { BotConfig } from "../app.config";
 import { aBot } from "../app.main";
 import { BotInfoCommandHandler } from "../commands/botinfo.command";
 import { ServerInfoCommandHandler } from "../commands/serverinfo.command";
@@ -11,6 +10,8 @@ import { SayCommandHandler } from "../commands/say.command";
 import { BalanceCommandHandler } from "../commands/balance.command";
 import { ProfileCommandHandler } from "../commands/profile.command";
 import { BanCommandHandler } from "../commands/ban.command";
+import { BotConfig } from "../models/bot-config";
+import { ConfigCommandHandler } from "../commands/config.command";
 
 export const MessageEvent = {
   fire(bot: aBot, config: BotConfig, message: Message): Promise<Message | Message[] | Collection<string, Message>> {
@@ -24,7 +25,11 @@ export const MessageEvent = {
     // get the first element of the argument array, stores it in a const and removes it from the source array
     const command: string = args.shift().toLowerCase();
 
+    const allowedAdminRoles: Array<string> = ['Administrator'];
+    //const allowedModRoles: Array<string> = ['Moderator', 'Administrator'];
+
     switch (command) {
+      case '?':
       case 'help':
         return HelpCommandHandler(bot, config, message);
 
@@ -36,6 +41,12 @@ export const MessageEvent = {
 
       case 'say':
         return SayCommandHandler(message, args);
+
+      case 'conf':
+      case 'config':
+        if (!message.member.roles.some(role => allowedAdminRoles.includes(role.name)))
+          return message.reply("Sorry, you don't have permissions to use this!");
+        return ConfigCommandHandler(bot, message, args);
 
       case 'ping':
         return PingCommandHandler(bot, message);
@@ -49,6 +60,7 @@ export const MessageEvent = {
       case 'ban':
         return BanCommandHandler(message, args);
 
+      case 'ver':
       case 'version':
         return VersionCommandHandler(message);
 
@@ -57,8 +69,7 @@ export const MessageEvent = {
 
       case 'terminate':
       case 'kill':
-        const allowedRoles: Array<string> = ['Administrator'];
-        if (!message.member.roles.some(role => allowedRoles.includes(role.name)))
+        if (!message.member.roles.some(role => allowedAdminRoles.includes(role.name)))
           return message.reply("Sorry, you don't have permissions to use this!");
         bot.kill();
         return;

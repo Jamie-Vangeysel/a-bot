@@ -1,6 +1,6 @@
 import { RichEmbed, Message } from "discord.js";
-import { BotConfig } from "../app.config";
 import { aBot } from "../app.main";
+import { BotConfig } from "../models/bot-config";
 
 export const HelpCommandHandler = (bot: aBot, config: BotConfig, message: Message): Promise<Message | Message[]> => {
   const helpembed = new RichEmbed()

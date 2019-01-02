@@ -1,5 +1,4 @@
 import { Message, GuildMember, Guild, User } from "discord.js";
-import { BotConfig } from "../app.config";
 import { aBot } from "../app.main";
 import { ReadyEvent } from "./ready.event";
 import { MessageEvent } from "./message.event";
@@ -7,44 +6,61 @@ import { DisconnectEvent } from "./disconnect.event";
 import { PresenceUpdateEvent } from "./presence-update.event";
 import { GuildMemberAddEvent } from "./guild-member-add.event";
 import { GuildMemberRemoveEvent } from "./guild-member-remove.event";
-import { GuildMemberBanAddEvent } from "./guild-member-ban-add.event";
-import { GuildMemberBanRemoveEvent } from "./guild-member-ban-remove.event";
+import { GuildBanAddEvent } from "./guild-ban-add.event";
+import { GuildBanRemoveEvent } from "./guild-ban-remove.event";
+import { BotConfig } from "../models/bot-config";
 
 export const botEventListener = {
   attach(bot: aBot, config: BotConfig): void {
-    // attach all event listeners to the client
-    bot.client.on('guildMemberAdd', async (member: GuildMember) => {
-      await GuildMemberAddEvent.fire(config, member);
-    });
+    // attach all enabled event listeners to the client
+    // WARN: disabling ready event can lead to catastrophic start failiures when config changes!
+    if ( config.events.ready === true ) {
+      bot.client.on('ready', async () => {
+        await ReadyEvent.fire(bot);
+      });
+    }
 
-    bot.client.on('guildMemberRemove', async (member: GuildMember) => {
-      await GuildMemberRemoveEvent.fire(config, member);
-    });
+    if ( config.events.disconnect === true ) {
+      bot.client.on('disconnect', () => {
+        DisconnectEvent.fire(bot.client);
+      });
+    }
 
-    bot.client.on('guildBanAdd', async (guild: Guild, user: User) => {
-      await GuildMemberBanAddEvent.fire(config, guild, user);
-    });
+    if ( config.events.message === true ) {
+      bot.client.on('message', async (message: Message) => {
+        await MessageEvent.fire(bot, config, message);
+      });
+    }
 
-    bot.client.on('guildBanRemove', async (guild: Guild, user: User) => {
-      await GuildMemberBanRemoveEvent.fire(config, guild, user);
-    });
+    if ( config.events.presenceUpdate === true ) {
+      bot.client.on('presenceUpdate', async (oldMember: GuildMember, newMember: GuildMember) => {
+        await PresenceUpdateEvent.fire({ old: oldMember, new: newMember });
+      });
+    }
 
-    bot.client.on('message', async (message: Message) => {
-      await MessageEvent.fire(bot, config, message);
-    });
+    if ( config.events.guildMemberAdd === true ) {
+      bot.client.on('guildMemberAdd', async (member: GuildMember) => {
+        await GuildMemberAddEvent.fire(config, member);
+      });
+    }
 
-    bot.client.on('presenceUpdate', async (oldMember: GuildMember, newMember: GuildMember) => {
-      await PresenceUpdateEvent.fire({ old: oldMember, new: newMember });
-    });
+    if ( config.events.guildMemberRemove === true ) {
+      bot.client.on('guildMemberRemove', async (member: GuildMember) => {
+        await GuildMemberRemoveEvent.fire(config, member);
+      });
+    }
 
-    bot.client.on('ready', async () => {
-      await ReadyEvent.fire(bot);
-    });
+    if ( config.events.guildBanAdd === true ) {
+      bot.client.on('guildBanAdd', async (guild: Guild, user: User) => {
+        await GuildBanAddEvent.fire(config, guild, user);
+      });
+    }
 
-    bot.client.on('disconnect', () => {
-      DisconnectEvent.fire(bot.client);
-    });
-
+    if ( config.events.guildBanRemove === true ) {
+      bot.client.on('guildBanRemove', async (guild: Guild, user: User) => {
+        await GuildBanRemoveEvent.fire(config, guild, user);
+      });
+    }
 
     bot.client.on("guildCreate", guild => {
       // This event triggers when the bot joins a guild.

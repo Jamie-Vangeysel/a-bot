@@ -1,5 +1,6 @@
 import { GuildMember, TextChannel, RichEmbed, GuildChannel, Role } from "discord.js";
-import { BotConfig, BotGuildConfig } from "../app.config";
+import { BotConfig } from "../models/bot-config";
+import { BotGuildConfig } from "../models/bot-guild-config";
 
 export const GuildMemberAddEvent = {
   async fire(config: BotConfig, member: GuildMember): Promise<GuildMember> {

@@ -7,12 +7,13 @@ export const PurgeCommandHandler = async (message: Message, args: Array<string>)
   let deleteCount = parseInt(args[0], 10);
 
   // if arg is all set count to 100
-  if (args[0] && args[0].toLowerCase() === 'all')
+  if (args[0] && args[0].toLowerCase() === 'all') {
     deleteCount = 100;
+  }
 
   // Ooooh nice, combined conditions. <3
   if (!deleteCount || deleteCount < 2 || deleteCount > 100)
-    return message.reply("Please provide a number between 2 and 100 for the number of messages to delete");
+    return message.reply('Please provide a number between 2 and 100 for the number of messages to delete.');
 
   // So we get our messages, and delete them. Simple enough, right?
   const fetched = await message.channel.fetchMessages({ limit: deleteCount });

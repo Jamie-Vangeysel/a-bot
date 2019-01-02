@@ -1,5 +1,7 @@
 import { Message } from "discord.js";
-import { BotConfig, BotGuildConfig, BotMemberConfig } from "../app.config";
+import { BotConfig } from "../models/bot-config";
+import { BotGuildConfig } from "../models/bot-guild-config";
+import { BotMemberConfig } from "../models/bot-member-config";
 
 export const BalanceCommandHandler = async (config: BotConfig, message: Message): Promise<Message | Message[]> => {
   // Then we delete the command message (sneaky, right?).

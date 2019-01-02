@@ -1,10 +1,12 @@
 import { RichEmbed, Message } from "discord.js";
-import { BotConfig, BotGuildConfig, BotMemberConfig } from "../app.config";
 import { aBot } from "../app.main";
+import { BotConfig } from "../models/bot-config";
+import { BotGuildConfig } from "../models/bot-guild-config";
+import { BotMemberConfig } from "../models/bot-member-config";
 
 export const ProfileCommandHandler = (bot: aBot, config: BotConfig, message: Message): Promise<Message | Message[]> => {
-  const confGuild: BotGuildConfig = config.guilds.find(e => e.id === message.guild.id);
-  const confMember: BotMemberConfig = confGuild.members.find(e => e.id === message.member.id);
+  const confGuild: BotGuildConfig = config.guilds.find((e: BotGuildConfig) => e.id === message.guild.id);
+  const confMember: BotMemberConfig = confGuild.members.find((e: BotMemberConfig) => e.id === message.member.id);
 
   const helpembed = new RichEmbed()
     .setDescription(`Profile ~ ${confMember.title}${confMember.name}`)

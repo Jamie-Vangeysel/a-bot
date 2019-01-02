@@ -1,7 +1,7 @@
 import { Client } from "discord.js";
 import { botEventListener } from "./events/listener";
-import { BotConfig } from "./app.config";
 import * as fs from 'fs';
+import { BotConfig } from "./models/bot-config";
 
 /**
  * This is the main class of the project containing bootstrap logic for our bot.
@@ -24,10 +24,33 @@ export class aBot {
    * Initializes the bot; attaching listeners and applying the configuration.
    * @param config: the current configuration of the bot
    */
-  public init(config: BotConfig) {
+  public async init(config: BotConfig) {
     this._bot = new Client({
       disableEveryone: true // bot cannot use everyone, for security purpose. Will be re-enabled later.
     });
+
+    // check config file integrity!
+    if ( !this._config.events ) {
+      console.debug(`events not configured!`);
+      // events are not configured => set defaults
+      this._config.events = {
+        disconnect: true,
+        ready: true,
+        presenceUpdate: true,
+        message: true,
+        guildBanAdd: true,
+        guildBanRemove: true,
+        guildMemberAdd: true,
+        guildMemberRemove: true
+      };
+      await this.saveConfig();
+    }
+    if ( !this._config.guilds ) {
+      console.debug(`events not configured!`);
+      // guilds are not configured => set to empty array, defaults will be created afterwards
+      this._config.guilds = [];
+      await this.saveConfig();
+    }
 
     // load event listeners
     try {
@@ -63,11 +86,18 @@ export class aBot {
     await this._bot.destroy();
   }
 
-  public saveConfiguratiom() {
-    fs.writeFile('./config.json', Buffer.from(JSON.stringify(this._config)), (err) => {
-      if (err) throw err;
-      console.debug('saved configuration');
+  public saveConfig(): Promise<boolean> {
+    const p = new Promise<boolean>((resolve, reject) => {
+      fs.writeFile('./config.json', Buffer.from(JSON.stringify(this._config)), (err) => {
+        if (err) {
+          reject(err);
+        }
+        console.debug('saved configuration');
+        resolve(true);
+      });
     });
+    
+    return p;
   }
 
   /**

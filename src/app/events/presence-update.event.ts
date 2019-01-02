@@ -7,8 +7,12 @@ export const PresenceUpdateEvent = {
     if (generalChannel && (generalChannel instanceof TextChannel)) {
       // if old presence has a game set, user is no longer playing
       if (member.old.presence.game) {
-        const timeplayed = (new Date().getTime() - member.old.presence.game.timestamps.start.getTime()) / 1000 / 60;
-        await generalChannel.send(`${member.new.displayName} is no longer playing ${member.old.presence.game.name} [${timeplayed.toFixed(2)}min].`);
+        try {
+          const timeplayed = (new Date().getTime() - member.old.presence.game.timestamps.start.getTime()) / 1000 / 60;
+          await generalChannel.send(`${member.new.displayName} is no longer playing ${member.old.presence.game.name} [${timeplayed.toFixed(2)}min].`);
+        } catch (err) {
+          console.error(err);
+        }
       }
       // if new presence has a game set the user started playing
       if (member.new.presence.game) {

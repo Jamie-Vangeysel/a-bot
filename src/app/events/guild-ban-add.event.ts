@@ -1,7 +1,7 @@
 import { Message, Guild, GuildChannel, TextChannel, User } from "discord.js";
-import { BotConfig } from "../app.config";
+import { BotConfig } from "../models/bot-config";
 
-export const GuildMemberBanAddEvent = {
+export const GuildBanAddEvent = {
   async fire(config: BotConfig, guild: Guild, user: User): Promise<Message | Message[]> {
     const generalChannel = guild.channels.find((channel: GuildChannel) => channel.name === 'general');
 

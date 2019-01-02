@@ -1,5 +1,5 @@
 import { GuildMember, TextChannel, RichEmbed, GuildChannel, Message } from "discord.js";
-import { BotConfig } from "../app.config";
+import { BotConfig } from "../models/bot-config";
 
 export const GuildMemberRemoveEvent = {
   async fire(config: BotConfig, member: GuildMember): Promise<Message | Message[]> {

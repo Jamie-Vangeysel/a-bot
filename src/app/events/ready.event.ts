@@ -1,6 +1,8 @@
 import { Presence, Guild, GuildChannel, GuildMember } from "discord.js";
 import { aBot } from "../app.main";
-import { BotGuildConfig, BotChannelConfig, BotMemberConfig } from "../app.config";
+import { BotGuildConfig } from "../models/bot-guild-config";
+import { BotChannelConfig } from "../models/bot-channel-config";
+import { BotMemberConfig } from "../models/bot-member-config";
 
 export const ReadyEvent = {
   async fire(bot: aBot): Promise<Presence> {
@@ -8,13 +10,28 @@ export const ReadyEvent = {
     // options: WATCHING STREAMING PLAYING LISTENING
     await bot.client.user.setActivity("startup sequence", { type: "LISTENING" });
 
-    // check config file integrity!
     // check if all guilds are presend in the config
-    bot.client.guilds.forEach((guild: Guild) => {
+    bot.client.guilds.forEach(async (guild: Guild) => {
       if ( bot.config.guilds.some( (e: BotGuildConfig) => e.name == guild.name )) {
         // guild is in config
-        console.debug(`lloaded configuration for guild ${guild.name}`);
+        console.debug(`loaded configuration for guild ${guild.name}`);
         // check the integrity of the config
+        const confGuild: BotGuildConfig = bot.config.guilds.find(e => e.id === guild.id);
+        if ( !confGuild.events ) {
+          console.debug(`events not configured for guild ${guild.name}`);
+          // events are not configured => set defaults
+          confGuild.events = {
+            disconnect: true,
+            ready: true,
+            presenceUpdate: true,
+            message: true,
+            guildBanAdd: true,
+            guildBanRemove: true,
+            guildMemberAdd: true,
+            guildMemberRemove: true
+          };
+          await bot.saveConfig();
+        }
       } else {
         console.debug(`Guild ${guild.name} is not yet in the confguration, creating default config!`);
         const channels: BotChannelConfig[] = [];
@@ -51,10 +68,20 @@ export const ReadyEvent = {
           adminRole: 'Administrator',
           moderatorRole: 'Moderator',
           channels: channels,
-          members: members
+          members: members,
+          events: {
+            disconnect: true,
+            ready: true,
+            presenceUpdate: true,
+            message: true,
+            guildBanAdd: true,
+            guildBanRemove: true,
+            guildMemberAdd: true,
+            guildMemberRemove: true
+          }
         });
         console.debug(`created guild entry in configuration!`);
-        bot.saveConfiguratiom();
+        await bot.saveConfig();
       }
     });
 

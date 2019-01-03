@@ -23,10 +23,10 @@
   "author": "JamieVangeysel",
   "license": "MIT",
   "dependencies": {
-    "discord.js": "^11.4.2",
-    "typescript": "^3.2.2"
+    "discord.js": "^11.4.2"
   },
   "devDependencies": {
+    "typescript": "^3.2.2",
     "@types/node": "^10.12.18"
   }
 }

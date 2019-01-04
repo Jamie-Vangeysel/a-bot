@@ -40,7 +40,7 @@ export const MessageEvent = {
         return ProfileCommandHandler(bot, config, message);
 
       case 'say':
-        return SayCommandHandler(message, args);
+        return SayCommandHandler(bot, message, args);
 
       case 'conf':
       case 'config':

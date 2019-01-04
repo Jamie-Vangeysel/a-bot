@@ -23,6 +23,7 @@
   "author": "JamieVangeysel",
   "license": "MIT",
   "dependencies": {
+    "cross-fetch": "^3.0.0",
     "discord.js": "^11.4.2"
   },
   "devDependencies": {

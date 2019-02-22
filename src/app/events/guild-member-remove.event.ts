@@ -3,7 +3,7 @@ import { BotConfig } from "../models/bot-config";
 
 export const GuildMemberRemoveEvent = {
   async fire(config: BotConfig, member: GuildMember): Promise<Message | Message[]> {
-    console.info(`${member.displayName} has joined the server.`);
+    // console.info(`${member.displayName} has joined the server.`);
     const generalChannel = member.guild.channels.find((channel: GuildChannel) => channel.name === 'general');
 
     if (generalChannel && (generalChannel instanceof TextChannel)) {
@@ -13,7 +13,7 @@ export const GuildMemberRemoveEvent = {
         .setThumbnail(member.user.displayAvatarURL);
       return generalChannel.send(joinedEmbed);
     } else {
-      console.error('error while sending message in welcome chat!');
+      // console.error('error while sending message in welcome chat!');
     }
   }
 };

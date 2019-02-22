@@ -11,7 +11,7 @@ export const PresenceUpdateEvent = {
           const timeplayed = (new Date().getTime() - member.old.presence.game.timestamps.start.getTime()) / 1000 / 60;
           await generalChannel.send(`${member.new.displayName} is no longer playing ${member.old.presence.game.name} [${timeplayed.toFixed(2)}min].`);
         } catch (err) {
-          console.error(err);
+          // console.error(err);
         }
       }
       // if new presence has a game set the user started playing
@@ -30,7 +30,7 @@ export const PresenceUpdateEvent = {
       // do nothing, just chill.
       return null;
     } else {
-      console.error('error while sending message in general channel!');
+      // console.error('error while sending message in general channel!');
     }
   }
 }

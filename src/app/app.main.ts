@@ -12,7 +12,7 @@ export class aBot {
   private _startDate: Date;
 
   constructor(config: BotConfig) {
-    console.debug('aBot has been initialized!');
+    // console.debug('aBot has been initialized!');
     this._config = config;
     this._startDate = new Date();
 
@@ -31,7 +31,7 @@ export class aBot {
 
     // check config file integrity!
     if ( !this._config.events ) {
-      console.debug(`events not configured!`);
+      // console.debug(`events not configured!`);
       // events are not configured => set defaults
       this._config.events = {
         disconnect: true,
@@ -46,7 +46,7 @@ export class aBot {
       await this.saveConfig();
     }
     if ( !this._config.guilds ) {
-      console.debug(`events not configured!`);
+      // console.debug(`events not configured!`);
       // guilds are not configured => set to empty array, defaults will be created afterwards
       this._config.guilds = [];
       await this.saveConfig();
@@ -55,9 +55,9 @@ export class aBot {
     // load event listeners
     try {
       botEventListener.attach(this, config);
-      console.debug('all event listeners were attached to the bot!');
+      // console.debug('all event listeners were attached to the bot!');
     } catch (err) {
-      console.error('error while trying to attach event listeners to bot client', err);
+      // console.error('error while trying to attach event listeners to bot client', err);
       return; // exit 0x0
     }
 
@@ -71,11 +71,11 @@ export class aBot {
   public start() {
     // login with token
     this._bot.login(this._config.token).then((message: string) => {
-      console.debug('login ok!', message);
+      // console.debug('login ok!', message);
     }, (err: any) => {
-      console.warn(`error ${err} while loggin in!`);
+      // console.warn(`error ${err} while loggin in!`);
     }).catch((err: any) => {
-      console.error(err);
+      // console.error(err);
     });
   }
 
@@ -92,7 +92,7 @@ export class aBot {
         if (err) {
           reject(err);
         }
-        console.debug('saved configuration');
+        // console.debug('saved configuration');
         resolve(true);
       });
     });

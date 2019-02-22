@@ -4,7 +4,7 @@
   "description": "this is just aBot for Discord, written in typescript designed to take over the world.",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "./node_modules/.bin/_mocha --exit -r ts-node/register --recursive src/**/*.spec.ts",
     "build": "tsc --p tsconfig.json",
     "start": "node dist/index.js"
   },
@@ -27,7 +27,13 @@
     "discord.js": "^11.4.2"
   },
   "devDependencies": {
-    "typescript": "^3.2.2",
-    "@types/node": "^10.12.18"
+    "@types/typescript": "^2.0.0",
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.6",
+    "@types/node": "^10.12.18",
+    "chai": "^4.2.0",
+    "mocha": "^6.0.1",
+    "ts-node": "^8.0.2",
+    "typescript": "^3.3.1"
   }
 }

@@ -1,0 +1,22 @@
+image: node:latest
+
+cache:
+  paths:
+  - node_modules/
+before_script:
+  - rm ./package-lock.json
+  - npm install
+
+staging_build:
+  stage: build
+  only:
+    - master
+  script:
+    - npm run build
+
+staging_test:
+  stage: test
+  only:
+    - master
+  script:
+    - npm test

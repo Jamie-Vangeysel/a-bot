@@ -7,7 +7,7 @@ export const SayCommandHandler = async (bot: aBot, message: Message, args: Array
   const sayMessage = args.join(' ');
   // Then we delete the command message (sneaky, right?). The catch just ignores the error with a cute smiley thing.
   await message.delete().catch(err => {
-    console.error(err);
+    // console.error(err);
   });
   const api = new Api();
   const response: ResolvedUUID = await api.mojang.getuuid('simplintho');
@@ -15,7 +15,6 @@ export const SayCommandHandler = async (bot: aBot, message: Message, args: Array
   const player_name = response.name;
   const urlFace = `https://crafatar.com/avatars/${player_uuid}.png`;
   const urlBody = `https://crafatar.com/renders/body/${player_uuid}.png`;
-  console.log(urlFace);
   // And we get the bot to say the thing
   const serverembed = new RichEmbed()
     .setTitle(`Very cool title for profile: ${player_name}`)

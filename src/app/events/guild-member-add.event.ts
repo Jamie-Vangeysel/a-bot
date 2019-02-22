@@ -4,7 +4,7 @@ import { BotGuildConfig } from "../models/bot-guild-config";
 
 export const GuildMemberAddEvent = {
   async fire(config: BotConfig, member: GuildMember): Promise<GuildMember> {
-    console.info(`${member.displayName} has joined the server.`);
+    // console.info(`${member.displayName} has joined the server.`);
     const generalChannel = member.guild.channels.find((channel: GuildChannel) => channel.name === 'general');
 
     if (generalChannel && (generalChannel instanceof TextChannel)) {
@@ -15,7 +15,7 @@ export const GuildMemberAddEvent = {
         .addField('Welcome', `${member.displayName} has entred the server, Hi! :wave:`);
       await generalChannel.send(joinedEmbed);
     } else {
-      console.error('error while sending message in welcome chat!');
+      // console.error('error while sending message in welcome chat!');
     }
 
 
@@ -36,7 +36,7 @@ export const GuildMemberAddEvent = {
     if (role) {
       return member.addRole(role);
     } else {
-      console.error('new role does not exist!');
+      // console.error('new role does not exist!');
       return;
     }
   }

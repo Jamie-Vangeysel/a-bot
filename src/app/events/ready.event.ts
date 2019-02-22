@@ -6,7 +6,7 @@ import { BotMemberConfig } from "../models/bot-member-config";
 
 export const ReadyEvent = {
   async fire(bot: aBot): Promise<Presence> {
-    console.log(`Bot has started, with ${bot.client.users.size} users, in ${bot.client.channels.size} channels of ${bot.client.guilds.size} guilds.`);
+    // console.log(`Bot has started, with ${bot.client.users.size} users, in ${bot.client.channels.size} channels of ${bot.client.guilds.size} guilds.`);
     // options: WATCHING STREAMING PLAYING LISTENING
     await bot.client.user.setActivity("startup sequence", { type: "LISTENING" });
 
@@ -14,11 +14,11 @@ export const ReadyEvent = {
     bot.client.guilds.forEach(async (guild: Guild) => {
       if ( bot.config.guilds.some( (e: BotGuildConfig) => e.name == guild.name )) {
         // guild is in config
-        console.debug(`loaded configuration for guild ${guild.name}`);
+        // console.debug(`loaded configuration for guild ${guild.name}`);
         // check the integrity of the config
         const confGuild: BotGuildConfig = bot.config.guilds.find(e => e.id === guild.id);
         if ( !confGuild.events ) {
-          console.debug(`events not configured for guild ${guild.name}`);
+          // console.debug(`events not configured for guild ${guild.name}`);
           // events are not configured => set defaults
           confGuild.events = {
             disconnect: true,
@@ -33,7 +33,7 @@ export const ReadyEvent = {
           await bot.saveConfig();
         }
       } else {
-        console.debug(`Guild ${guild.name} is not yet in the confguration, creating default config!`);
+        // console.debug(`Guild ${guild.name} is not yet in the confguration, creating default config!`);
         const channels: BotChannelConfig[] = [];
         const members: BotMemberConfig[] = [];
         guild.channels.forEach((channel: GuildChannel) => {
@@ -80,7 +80,7 @@ export const ReadyEvent = {
             guildMemberRemove: true
           }
         });
-        console.debug(`created guild entry in configuration!`);
+        // console.debug(`created guild entry in configuration!`);
         await bot.saveConfig();
       }
     });

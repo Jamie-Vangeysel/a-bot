@@ -236,8 +236,8 @@ export class Events {
         return;
 
       default:
-        await message.delete(300);
-        const newM = message.channel.send(`Unknown command: '${command}', type ${config.prefix}help for a list of available commands`);
+        await message.delete();
+        const newM = message.channel.send(`Unknown command: '${config.prefix}${command}', type ${config.prefix}help for a list of available commands`);
         newM.then(r => {
           if (r instanceof Message) {
             r.delete(2000);

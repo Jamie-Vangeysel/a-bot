@@ -216,8 +216,9 @@ export class Events {
           if (resp && resp.items) {
             // console.log(JSON.stringify(resp));
             resp.items.forEach(vid => {
-              titles += vid.snippet.title + ` https://www.youtube.com/watch?v=${vid.id.videoId} \n`;
+              titles += vid.snippet.title + ` \n`;
             });
+            titles += `\nhttps://www.youtube.com/watch?v=${resp.items[0].id.videoId}`;
             message.channel.send(titles);
           } else if (resp) {
             message.channel.send(JSON.stringify(resp));

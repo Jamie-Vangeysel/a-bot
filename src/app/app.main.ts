@@ -1,7 +1,8 @@
 import { Client } from "discord.js";
-import { botEventListener } from "./events/listener";
-import * as fs from 'fs';
-import { BotConfig } from "./models/bot-config";
+import BotConfig from "./models/bot-config";
+import { FileSystem } from "./filesystem";
+import dbGuild from "./models/guild";
+import Events from "./events";
 
 /**
  * This is the main class of the project containing bootstrap logic for our bot.
@@ -12,7 +13,6 @@ export class aBot {
   private _startDate: Date;
 
   constructor(config: BotConfig) {
-    // console.debug('aBot has been initialized!');
     this._config = config;
     this._startDate = new Date();
 
@@ -29,32 +29,9 @@ export class aBot {
       disableEveryone: true // bot cannot use everyone, for security purpose. Will be re-enabled later.
     });
 
-    // check config file integrity!
-    if ( !this._config.events ) {
-      // console.debug(`events not configured!`);
-      // events are not configured => set defaults
-      this._config.events = {
-        disconnect: true,
-        ready: true,
-        presenceUpdate: true,
-        message: true,
-        guildBanAdd: true,
-        guildBanRemove: true,
-        guildMemberAdd: true,
-        guildMemberRemove: true
-      };
-      await this.saveConfig();
-    }
-    if ( !this._config.guilds ) {
-      // console.debug(`events not configured!`);
-      // guilds are not configured => set to empty array, defaults will be created afterwards
-      this._config.guilds = [];
-      await this.saveConfig();
-    }
-
     // load event listeners
     try {
-      botEventListener.attach(this, config);
+      Events.attach(this, config);
       // console.debug('all event listeners were attached to the bot!');
     } catch (err) {
       // console.error('error while trying to attach event listeners to bot client', err);
@@ -69,14 +46,23 @@ export class aBot {
    * Start the bot
    */
   public start() {
-    // login with token
     this._bot.login(this._config.token).then((message: string) => {
-      // console.debug('login ok!', message);
+      console.debug('login ok!', message);
     }, (err: any) => {
-      // console.warn(`error ${err} while loggin in!`);
-    }).catch((err: any) => {
-      // console.error(err);
-    });
+      console.warn(`error ${err} while loggin in!`);
+    }).catch(_ => null);
+    try {
+
+      dbGuild.find((err: any, books: any) => {
+        if (err) {
+          throw err;
+        } else {
+          console.log(JSON.stringify(books));
+        }
+      });
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   /**
@@ -87,17 +73,7 @@ export class aBot {
   }
 
   public saveConfig(): Promise<boolean> {
-    const p = new Promise<boolean>((resolve, reject) => {
-      fs.writeFile('./config.json', Buffer.from(JSON.stringify(this._config)), (err) => {
-        if (err) {
-          reject(err);
-        }
-        // console.debug('saved configuration');
-        resolve(true);
-      });
-    });
-    
-    return p;
+    return new FileSystem().writeFile('./config.json', Buffer.from(JSON.stringify(this._config)));
   }
 
   /**
@@ -143,3 +119,5 @@ export class aBot {
     return `${daysstring}${hoursstring}${minutesstring}${secondsstring}`;
   }
 }
+
+export default aBot;

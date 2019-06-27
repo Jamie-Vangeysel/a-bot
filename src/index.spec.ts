@@ -1,38 +1,50 @@
 import { expect } from 'chai';
-import { main, checkFile, writeFile, readFile } from './index';
+import main from './index';
 import { DefaultConfig } from './app/app.config';
+import { FileSystem } from './app/filesystem';
 
 describe('index.js', () => {
+  const fs = new FileSystem();
   it('main() should exsist', () => {
     expect(main).to.exist;
   });
   it('checkFile() should exsist', () => {
-    expect(checkFile).to.exist;
+    expect(fs.exists).to.exist;
   });
   it('writeFile should exsist', () => {
-    expect(writeFile).to.exist;
+    expect(fs.writeFile).to.exist;
+  });
+  it('writeAppendFile should exsist', () => {
+    expect(fs.writeAppendFile).to.exist;
   });
   it('readFile should exsist', () => {
-    expect(readFile).to.exist;
+    expect(fs.readFile).to.exist;
+  });
+  it('delete should exsist', () => {
+    expect(fs.delete).to.exist;
   });
   it('main() should return true', async () => {
     const result = await main();
     expect(result).to.true;
   });
   it('check file "dlkfsjdslfs.fdskfh" should be false', async () => {
-    const result = await checkFile('dlkfsjdslfs.fdskfh');
+    const result = await fs.exists('dlkfsjdslfs.fdskfh');
     expect(result).to.be.false;
   });
-  it('write file "config.json" should be true', async () => {
-    const result = await writeFile('config.json', DefaultConfig);
+  it('write file "myconfigTest.json" should be true', async () => {
+    const result = await fs.writeFile('myconfigTest.json', Buffer.from(JSON.stringify(DefaultConfig)));
     expect(result).to.be.true;
   });
-  it('check file "config.json" should be true', async () => {
-    const result = await checkFile('config.json');
+  it('check file "myconfigTest.json" should be true', async () => {
+    const result = await fs.exists('myconfigTest.json');
     expect(result).to.be.true;
   });
-  it('read file "config.json" should equal DefaultConfig', async () => {
-    const result = await readFile('config.json');
-    expect(JSON.stringify(result)).to.equal(JSON.stringify(DefaultConfig));
+  it('read file "myconfigTest.json" should equal DefaultConfig', async () => {
+    const result = await fs.readFile('myconfigTest.json');
+    expect(result.toString()).to.equal(JSON.stringify(DefaultConfig));
+  });
+  it('delete file "myconfigTest.json" should equal true', async () => {
+    const result = await fs.delete('myconfigTest.json');
+    expect(result).to.be.true;
   });
 });

@@ -20,7 +20,7 @@ export const SayCommandHandler = async (bot: aBot, message: Message, args: Array
     .setTitle(`Very cool title for profile: ${player_name}`)
     .setAuthor(`MVP: ${player_name}`, message.member.user.displayAvatarURL)
     .setDescription(sayMessage)
-    .setColor(bot.config.color)
+    // .setColor(bot.config.color)
     .setThumbnail(urlFace)
     .addField(':scream:', 'Very scary message about blue whales.')
     .setFooter("This message has been send by `a bot`, please don't overthrow the world!")

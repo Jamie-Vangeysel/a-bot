@@ -5,7 +5,7 @@ import { BotConfig } from "../models/bot-config";
 export const BotInfoCommandHandler = (bot: aBot, config: BotConfig, message: Message): Promise<Message | Message[]> => {
   const botembed = new RichEmbed()
     .setDescription('Bot made by JamieVangeysel')
-    .setColor(config.color)
+    // .setColor(config.color)
     .setThumbnail(bot.client.user.displayAvatarURL)
     .addField('Botname', bot.client.user.username)
     .addField('Created On', bot.client.user.createdAt)

@@ -1,33 +1,40 @@
 /**
  * This is the entry point of the application, in here we start our instance of the bot.
  */
-import { aBot } from "./app/app.main";
+import aBot from "./app/app.main";
+import BotConfig from "./app/models/bot-config";
 import { DefaultConfig } from "./app/app.config";
-import * as fs from 'fs';
+import { FileSystem } from './app/filesystem';
 
 // global bot var
 let bot: aBot;
+const filesystem = new FileSystem();
 
 /**
  * @function: main()
  * @description: this is the entry point of the program, return true if the application started
  */
+const main = async (): Promise<boolean> => {
+  // const MongoClient = require(‘mongodb’).MongoClient;
+  // const uri = "mongodb+srv://alastor:<password>@cluster0-1z5qu.mongodb.net/test?retryWrites=true&w=majority";
+  // const client = new MongoClient(uri, { useNewUrlParser: true });
 
-export const main = async (): Promise<boolean> => {
   return new Promise<boolean>(async (resolve, reject) => {
-    const fileExists = await checkFile('./config.json');
+    const fileExists: boolean = await filesystem.exists('./config.json');
     try {
-      if (fileExists) {
-        const config = await readFile('./config.json');
-        if (config.token !== undefined) {
+      if (fileExists === true) {
+        const configBuffer: Buffer = await filesystem.readFile('./config.json');
+        const config = BotConfig.checkBuffer(configBuffer);
+
+        if (config) {
           bot = new aBot(config);
         }
         resolve(bot.config.token !== undefined);
       } else {
         // create file with default config attached
-        const writeOk = await writeFile('./config.json', DefaultConfig);
+        const writeOk = await filesystem.writeFile('./config.json', Buffer.from(JSON.stringify(DefaultConfig)));
         if (writeOk) {
-          bot = new aBot(DefaultConfig);
+          bot = new aBot(new BotConfig(DefaultConfig));
           resolve(bot.config.token !== undefined);
         }
         resolve(writeOk);
@@ -37,55 +44,26 @@ export const main = async (): Promise<boolean> => {
     }
   });
 }
-
-export const checkFile = (filepath: string): Promise<boolean> => {
-  return new Promise<boolean>((resolve, reject) => {
-    try {
-      fs.exists(filepath, (exists: boolean) => resolve(exists));
-    } catch (err) {
-      reject(err);
-    }
-  });
-}
-
-export const readFile = (filepath: string): Promise<any> => {
-  return new Promise<any>((resolve, reject) => {
-    fs.readFile('./config.json', (err, data) => {
-      if (err) reject(err);
-      try {
-        const obj = JSON.parse(data.toString());
-        resolve(obj);
-      } catch (ex) {
-        reject(ex);
-      }
-    });
-  });
-}
-
-export const writeFile = (filepath: string, data: any): Promise<boolean> => {
-  return new Promise<any>((resolve, reject) => {
-    try {
-      fs.writeFile(filepath, Buffer.from(JSON.stringify(data)), (err) => {
-        if (err) resolve(false);
-        resolve(true);
-      });
-    } catch (err) {
-      reject(err);
-    }
-  });
-}
+export default main;
 
 main();
 
 // catch ctrl+c event and exit normally
-process.on('SIGINT', () => {
-  bot.kill();
-  // console.debug('exiting process!');
-  // process.exit(13);
+process.on('SIGINT', async _ => {
+  await bot.kill();
+  console.debug('SIGINT!');
+  process.exit();
 });
 
-// catch uncaught exceptions, trace, then exit normally
-process.on('uncaughtException', () => {
-  bot.kill();
-  process.exit(99);
+// catch uncaught exceptions, trace, then restart
+process.on('uncaughtException', _ => {
+  try {
+    console.debug('process.uncaughtException -- Try to kill bot if still running.');
+    bot.kill();
+  } catch (e) {
+    console.error('process.uncaughtException -- There was an error killing the bot.');
+    bot.kill();
+  }
+  console.debug('process.uncaughtException -- Starting new instance of bot.');
+  main();
 });

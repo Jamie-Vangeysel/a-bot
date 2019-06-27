@@ -5,16 +5,25 @@ import { BotGuildConfig } from "../models/bot-guild-config";
 import { BotMemberConfig } from "../models/bot-member-config";
 
 export const ProfileCommandHandler = (bot: aBot, config: BotConfig, message: Message): Promise<Message | Message[]> => {
-  const confGuild: BotGuildConfig = config.guilds.find((e: BotGuildConfig) => e.id === message.guild.id);
-  const confMember: BotMemberConfig = confGuild.members.find((e: BotMemberConfig) => e.id === message.member.id);
+  // const confGuild: BotGuildConfig = config.guilds.find((e: BotGuildConfig) => e.id === message.guild.id);
+  // const confMember: BotMemberConfig = confGuild.members.find((e: BotMemberConfig) => e.id === message.member.id);
+  let confMember = {
+    title: 'y',
+    name: 'y',
+    description: 'y',
+    level: 100,
+    reputation: 100,
+    cash: 100,
+    bank: 100
+  };
 
   const helpembed = new RichEmbed()
     .setDescription(`Profile ~ ${confMember.title}${confMember.name}`)
-    .setColor(config.color)
+    // .setColor(config.color)
     .setThumbnail(message.member.user.displayAvatarURL)
-    .addField('description',`${confMember.description}`)
-    .addField('balance',`cash: ${confMember.cash}$, bank: ${confMember.bank}`)
-    .addField('level',`you are level ${confMember.level}`)
-    .addField('reputation',`You have ${confMember.reputation} reputation`);
+    .addField('description', `${confMember.description}`)
+    .addField('balance', `cash: ${confMember.cash}$, bank: ${confMember.bank}`)
+    .addField('level', `you are level ${confMember.level}`)
+    .addField('reputation', `You have ${confMember.reputation} reputation`);
   return message.channel.send(helpembed);
 };

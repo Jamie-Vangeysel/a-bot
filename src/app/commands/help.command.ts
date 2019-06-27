@@ -5,7 +5,7 @@ import { BotConfig } from "../models/bot-config";
 export const HelpCommandHandler = (bot: aBot, config: BotConfig, message: Message): Promise<Message | Message[]> => {
   const helpembed = new RichEmbed()
     .setDescription('Commands List')
-    .setColor(config.color)
+    // .setColor(config.color)
     .setThumbnail(bot.client.user.displayAvatarURL)
     .addField(`${config.prefix}help`, 'Displays this message, use ```!help [command]``` to get help for specific commands')
     .addField(`${config.prefix}botinfo`, 'Gives information about the bot.')

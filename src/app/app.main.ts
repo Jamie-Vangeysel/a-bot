@@ -3,6 +3,10 @@ import BotConfig from "./models/bot-config";
 import { FileSystem } from "./filesystem";
 import dbGuild from "./models/guild";
 import Events from "./events";
+import HomeController from "./controllers/home";
+import BaseController from "./controllers/base";
+import { Api } from "./api/api";
+import YoutubeController from "./controllers/youtube";
 
 /**
  * This is the main class of the project containing bootstrap logic for our bot.
@@ -11,6 +15,14 @@ export class aBot {
   private _config: BotConfig;
   private _bot: Client;
   private _startDate: Date;
+
+  // controllers
+  controllers: {
+    base?: BaseController,
+    home?: HomeController,
+    youtube?: YoutubeController
+  } = {};
+  api: Api;
 
   constructor(config: BotConfig) {
     this._config = config;
@@ -37,6 +49,8 @@ export class aBot {
       // console.error('error while trying to attach event listeners to bot client', err);
       return; // exit 0x0
     }
+
+    this.api = new Api();
 
     // start the bot after init has completed
     this.start();

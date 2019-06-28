@@ -2,19 +2,11 @@ import aBot from "./app.main";
 import dbGuild from "./models/guild";
 import BotConfig from "./models/bot-config";
 import { Presence, Guild, GuildMember, GuildChannel, TextChannel, Message, Collection, RichEmbed, Role, User } from "discord.js";
-import { HelpCommandHandler } from "./commands/help.command";
-import { BalanceCommandHandler } from "./commands/balance.command";
-import { ProfileCommandHandler } from "./commands/profile.command";
-import { SayCommandHandler } from "./commands/say.command";
-import { ConfigCommandHandler } from "./commands/config.command";
-import { PingCommandHandler } from "./commands/ping.command";
-import { ServerInfoCommandHandler } from "./commands/serverinfo.command";
-import { BotInfoCommandHandler } from "./commands/botinfo.command";
-import { BanCommandHandler } from "./commands/ban.command";
-import { VersionCommandHandler } from "./commands/version.command";
-import { PurgeCommandHandler } from "./commands/purge.command";
 import { Api } from "./api/api";
-import { youtubeSearchListResponse } from "./api/api.youtube";
+import { youtubeSearchListResponse } from "./api/models/youtube";
+import HomeController from "./controllers/home";
+import BaseController from "./controllers/base";
+import YoutubeController from "./controllers/youtube";
 
 export class Events {
   static attach(bot: aBot, config: BotConfig): void {
@@ -103,6 +95,10 @@ export class Events {
       });
     }
 
+    bot.controllers.base = new BaseController(bot, config);
+    bot.controllers.home = new HomeController(bot, config);
+    bot.controllers.youtube = new YoutubeController(bot, config);
+
     bot.client.on('error', console.error);
   }
 
@@ -110,6 +106,7 @@ export class Events {
     console.log(`Bot has started, with ${bot.client.users.size} users, in ${bot.client.channels.size} channels of ${bot.client.guilds.size} guilds.`);
     // options: WATCHING STREAMING PLAYING LISTENING
     await bot.client.user.setActivity("startup sequence", { type: "PLAYING" });
+
 
     // check if the guilds are in the database
     bot.client.guilds.forEach(async (guild: Guild) => {
@@ -161,91 +158,7 @@ export class Events {
       return;
     }
 
-    // splits the arguments and removes the prefic from the command
-    const args: Array<string> = message.content.slice(config.prefix.length).trim().split(/ +/g);
-    // get the first element of the argument array, stores it in a const and removes it from the source array
-    const command: string = args.shift().toLowerCase();
-
-    const allowedAdminRoles: Array<string> = ['Administrator'];
-    //const allowedModRoles: Array<string> = ['Moderator', 'Administrator'];
-
-    switch (command) {
-      case '?':
-      case 'help':
-        return HelpCommandHandler(bot, config, message);
-
-      case 'balance':
-        return BalanceCommandHandler(config, message);
-
-      case 'profile':
-        return ProfileCommandHandler(bot, config, message);
-
-      case 'say':
-        return SayCommandHandler(bot, message, args);
-
-      case 'conf':
-      case 'config':
-        if (!message.member.roles.some(role => allowedAdminRoles.includes(role.name)))
-          return message.reply("Sorry, you don't have permissions to do this!");
-        return ConfigCommandHandler(bot, message, args);
-
-      case 'ping':
-        return PingCommandHandler(bot, message);
-
-      case 'serverinfo':
-        return ServerInfoCommandHandler(bot, config, message);
-
-      case 'botinfo':
-        return BotInfoCommandHandler(bot, config, message);
-
-      case 'ban':
-        return BanCommandHandler(message, args);
-
-      case 'ver':
-      case 'version':
-        return VersionCommandHandler(message);
-
-      case 'purge':
-        return PurgeCommandHandler(message, args);
-
-      case 'yt':
-        const api = new Api();
-        const query = args.join(' ');
-        let titles: string = `Top 5 Youtube Search results for query: '${query}'\n\n`;
-        api.youtube.search(query).then((resp: youtubeSearchListResponse) => {
-          if (resp && resp.items) {
-            // console.log(JSON.stringify(resp));
-            resp.items.forEach(vid => {
-              titles += vid.snippet.title + ` \n`;
-            });
-            titles += `\nhttps://www.youtube.com/watch?v=${resp.items[0].id.videoId}`;
-            message.channel.send(titles);
-          } else if (resp) {
-            message.channel.send(JSON.stringify(resp));
-          } else {
-            message.channel.send('unknown err');
-          }
-        });
-        break;
-
-      case 'terminate':
-      case 'kill':
-        if (!message.member.roles.some(role => allowedAdminRoles.includes(role.name)))
-          return message.reply("Sorry, you don't have permissions to use this!");
-        bot.kill();
-        return;
-
-      default:
-        await message.delete();
-        const newM = message.channel.send(`Unknown command: '${config.prefix}${command}', type ${config.prefix}help for a list of available commands`);
-        newM.then(r => {
-          if (r instanceof Message) {
-            r.delete(2000);
-          }
-        })
-        return newM;
-    }
-
+    return await bot.controllers.base.handle(message);
   }
 
   async presenceUpdateEvent(member: { old: GuildMember, new: GuildMember }): Promise<any> {

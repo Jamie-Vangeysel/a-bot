@@ -1,6 +1,9 @@
-import { Mojang, iMojang } from './api.mojang';
-import { Crafatar, iCrafatar } from './api.crafatar';
-import { YoutubeApi, iYoutubeApi } from './api.youtube';
+import { Mojang } from './api.mojang';
+import { Crafatar } from './api.crafatar';
+import { YoutubeApi } from './api.youtube';
+import { iMojang } from './models/mojang';
+import { iCrafatar } from './models/crafatar';
+import { iYoutubeApi } from './models/youtube';
 
 export class Api {
   constructor() {

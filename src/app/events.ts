@@ -2,8 +2,6 @@ import aBot from "./app.main";
 import dbGuild from "./models/guild";
 import BotConfig from "./models/bot-config";
 import { Presence, Guild, GuildMember, GuildChannel, TextChannel, Message, Collection, RichEmbed, Role, User } from "discord.js";
-import { Api } from "./api/api";
-import { youtubeSearchListResponse } from "./api/models/youtube";
 import HomeController from "./controllers/home";
 import BaseController from "./controllers/base";
 import YoutubeController from "./controllers/youtube";

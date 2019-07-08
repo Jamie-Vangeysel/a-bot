@@ -1,6 +1,7 @@
 import * as mongoose from "mongoose";
 
 const uri: string = "mongodb+srv://alastor:nuwqen-4jaqNu-fuzkoh@cluster0-1z5qu.mongodb.net/test?retryWrites=true&w=majority";
+// https://tutorialedge.net/typescript/typescript-mongodb-beginners-tutorial/
 
 mongoose.connection.on("open", function (ref) {
   return console.log("Connected to mongo server!");
@@ -34,7 +35,7 @@ export const MemberSchema = new mongoose.Schema({
   bank: { type: Number, required: false, default: 0 },
   experience: { type: Number, required: false, default: 0 },
   level: { type: Number, required: false, default: 0 },
-  reputation: { type: Number, required: false, default: 0 },
+  reputation: { type: Number, required: false, default: 0 }
 });
 
 const Member = mongoose.model<IMember>("Member", MemberSchema);

@@ -14,7 +14,11 @@ const filesystem = new FileSystem();
  * @function: main()
  * @description: this is the entry point of the program, return true if the application started
  */
-const main = async (): Promise<boolean> => {
+const main = async (debug?: boolean): Promise<boolean> => {
+  if (debug) {
+    console.log = () => { };
+    console.info = () => { };
+  }
   // const MongoClient = require(‘mongodb’).MongoClient;
   // const uri = "mongodb+srv://alastor:<password>@cluster0-1z5qu.mongodb.net/test?retryWrites=true&w=majority";
   // const client = new MongoClient(uri, { useNewUrlParser: true });

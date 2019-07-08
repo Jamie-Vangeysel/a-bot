@@ -44,7 +44,7 @@ export default class YoutubeController {
     if (resp && resp.items) {
       // console.log(JSON.stringify(resp));
       resp.items.forEach(vid => {
-        titles += vid.snippet.title + ` \n`;
+        titles += decodeURIComponent(vid.snippet.title) + ` \n`;
       });
       titles += `\nhttps://www.youtube.com/watch?v=${resp.items[0].id.videoId}`;
       return await message.channel.send(titles);

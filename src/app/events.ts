@@ -43,7 +43,7 @@ export class Events {
     if (config.checkFunctionanlity('presenceUpdate')) {
       console.debug(`attachEventListeners() -- checkFunctionanlity('presenceUpdate')`);
       bot.client.on('presenceUpdate', async (oldMember: GuildMember, newMember: GuildMember) => {
-        // await PresenceUpdateEvent.fire({ old: oldMember, new: newMember });
+        // await events.presenceUpdateEvent({ old: oldMember, new: newMember });
       });
     }
 
@@ -174,7 +174,7 @@ export class Events {
       }
       // if new presence has a game set the user started playing
       if (member.new.presence.game) {
-        // return generalChannel.send(`${member.new.displayName} is now playing ${member.new.presence.game.name}.`);
+        return generalChannel.send(`${member.new.displayName} is now playing ${member.new.presence.game.name}.`);
       }
       // check if the new status does not equal the old status, because well ...
       /** [22:20] BOTaBot: Wraptor is now dnd.
@@ -182,7 +182,7 @@ export class Events {
           [22:24] BOTaBot: Wraptor is now dnd.
        */
       if (member.new.presence.status !== member.old.presence.status) {
-        // return generalChannel.send(`${member.new.displayName} is now ${member.new.presence.status}.`);
+        return generalChannel.send(`${member.new.displayName} is now ${member.new.presence.status}.`);
       }
 
       // do nothing, just chill.

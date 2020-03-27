@@ -1,6 +1,6 @@
 import aBot from "../app.main";
 import { BotConfig } from "../models/bot-config";
-import { Message, RichEmbed } from "discord.js";
+import { Message, MessageEmbed } from "discord.js";
 import { youtubeSearchListResponse } from "../api/models/youtube";
 
 export default class YoutubeController {
@@ -29,10 +29,10 @@ export default class YoutubeController {
   }
 
   async help(message: Message): Promise<Message | Message[]> {
-    const helpembed = new RichEmbed()
+    const helpembed = new MessageEmbed()
       .setDescription('Home commands list')
       // .setColor(config.color)
-      .setThumbnail(this._bot.client.user.displayAvatarURL)
+      .setThumbnail(this._bot.client.user.displayAvatarURL())
       .addField(`${this._config.prefix}home help`, 'Displays this message, use ```!home help [command]``` to get help for specific commands if available')
       .addField('Suggestions for the bot?', 'You can always message me <@250591432975319043>!')
     return await message.channel.send(helpembed);

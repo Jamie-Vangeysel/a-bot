@@ -1,12 +1,12 @@
-import { RichEmbed, Message } from "discord.js";
+import { MessageEmbed, Message } from "discord.js";
 import { aBot } from "../app.main";
 import { BotConfig } from "../models/bot-config";
 
 export const HelpCommandHandler = (bot: aBot, config: BotConfig, message: Message): Promise<Message | Message[]> => {
-  const helpembed = new RichEmbed()
+  const helpembed = new MessageEmbed()
     .setDescription('Commands List')
     // .setColor(config.color)
-    .setThumbnail(bot.client.user.displayAvatarURL)
+    .setThumbnail(bot.client.user.displayAvatarURL())
     .addField(`${config.prefix}help`, 'Displays this message, use ```!help [command]``` to get help for specific commands if available')
     .addField(`${config.prefix}botinfo`, 'Gives information about the bot.')
     .addField(`${config.prefix}serverinfo`, 'Gives information about the server')

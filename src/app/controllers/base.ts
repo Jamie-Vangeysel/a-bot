@@ -1,6 +1,6 @@
 import aBot from "../app.main";
 import { BotConfig } from "../models/bot-config";
-import { Message, RichEmbed, Collection, GuildChannel, TextChannel, DMChannel, GroupDMChannel } from "discord.js";
+import { Message, Collection, TextChannel, DMChannel, MessageEmbed } from "discord.js";
 import { Api } from "../api/api";
 import { ResolvedUUID } from "../api/models/mojang";
 
@@ -75,7 +75,7 @@ export default class BaseController {
 
       case 'terminate':
       case 'kill':
-        if (!message.member.roles.some(role => allowedAdminRoles.includes(role.name)))
+        if (!message.member.roles.cache.some(role => allowedAdminRoles.includes(role.name)))
           return message.reply("Sorry, you don't have permissions to use this!");
         this._bot.kill();
         return;
@@ -84,7 +84,7 @@ export default class BaseController {
         await message.delete();
         const newM = await message.channel.send(`Unknown command: '${this._config.prefix}${command}', type ${this._config.prefix}help for a list of available commands`);
         if (newM instanceof Message) {
-          newM.delete(2000);
+          newM.delete({ timeout: 2000 });
         }
         return newM;
     }
@@ -104,7 +104,7 @@ export default class BaseController {
     // Most of this command is identical to kick, except that here we'll only let admins do it.
     // In the real world mods could ban too, but this is just an example, right? ;)
     const allowedRoles: Array<string> = ['Administrator'];
-    if (!message.member.roles.some(role => allowedRoles.includes(role.name)))
+    if (!message.member.roles.cache.some(role => allowedRoles.includes(role.name)))
       return message.reply("Sorry, you don't have permissions to use this!");
 
     let member = message.mentions.members.first();
@@ -116,16 +116,16 @@ export default class BaseController {
     let reason = args.slice(1).join(' ');
     if (!reason) reason = "No reason provided";
 
-    await member.ban(reason)
+    await member.ban({ reason: reason })
       .catch(error => message.reply(`Sorry ${message.author} I couldn't ban because of : ${error}`));
     message.reply(`${member.user.tag} has been banned by ${message.author.tag} because: ${reason}`);
   }
 
   async botinfo(message: Message): Promise<Message | Message[]> {
-    const botembed = new RichEmbed()
+    const botembed = new MessageEmbed()
       .setDescription('Bot made by JamieVangeysel')
       // .setColor(config.color)
-      .setThumbnail(this._bot.client.user.displayAvatarURL)
+      .setThumbnail(this._bot.client.user.displayAvatarURL())
       .addField('Botname', this._bot.client.user.username)
       .addField('Created On', this._bot.client.user.createdAt)
       .addField('Runtime', `${this._bot.runtime}`)
@@ -134,10 +134,10 @@ export default class BaseController {
   }
 
   async help(message: Message): Promise<Message | Message[]> {
-    const helpembed = new RichEmbed()
+    const helpembed = new MessageEmbed()
       .setDescription('Commands List')
       // .setColor(config.color)
-      .setThumbnail(this._bot.client.user.displayAvatarURL)
+      .setThumbnail(this._bot.client.user.displayAvatarURL())
       .addField(`${this._config.prefix}help`, 'Displays this message, use ```!help [command]``` to get help for specific commands if available')
       .addField(`${this._config.prefix}botinfo`, 'Gives information about the bot.')
       .addField(`${this._config.prefix}serverinfo`, 'Gives information about the server')
@@ -150,13 +150,13 @@ export default class BaseController {
   async kick(message: Message, args: string[]): Promise<Message | Message[]> {
     // This command must be limited to mods and admins. In this example we just hardcode the role names.
     const allowedRoles: Array<string> = ['Administrator', 'Moderator'];
-    if (!message.member.roles.some(role => allowedRoles.includes(role.name)))
+    if (!message.member.roles.cache.some(role => allowedRoles.includes(role.name)))
       return message.reply("Sorry, you don't have permissions to use this!");
 
     // Let's first check if we have a member and if we can kick them!
     // message.mentions.members is a collection of people that have been mentioned, as GuildMembers.
     // We can also support getting the member by ID, which would be args[0]
-    let member = message.mentions.members.first() || message.guild.members.get(args[0]);
+    let member = message.mentions.members.first() || await (await message.guild.members.fetch({ query: args[0] })).first();
     if (!member)
       return message.reply("Please mention a valid member of this server");
     if (!member.kickable)
@@ -168,7 +168,7 @@ export default class BaseController {
     if (!reason) reason = "No reason provided";
 
     // Now, time for a swift kick in the nuts!
-    await member.kick(reason).catch(error => message.reply(`Sorry ${message.author} I couldn't kick because of : ${error}`));
+    await member.kick(reason).catch((err: any) => message.reply(`Sorry ${message.author} I couldn't kick because of : ${err}`));
     return message.reply(`${member.user.tag} has been kicked by ${message.author.tag} because: ${reason}`);
   }
 
@@ -190,7 +190,7 @@ export default class BaseController {
     }
   }
 
-  doCountdown(channel: TextChannel | DMChannel | GroupDMChannel, targetTime: Date, interval: number) {
+  doCountdown(channel: TextChannel | DMChannel, targetTime: Date, interval: number) {
     const myInterval = setInterval(() => {
       if (new Date() < targetTime) {
         const milis = targetTime.getTime() - new Date().getTime();
@@ -205,7 +205,7 @@ export default class BaseController {
     const m = await message.channel.send("Ping?");
 
     if (m instanceof Message) {
-      return m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms.\nAPI Latency is ${Math.round(this._bot.client.ping)}ms.`);
+      return m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms.\nAPI Latency is ${Math.round(this._bot.client.ws.ping)}ms.`);
     }
     return m;
   }
@@ -221,10 +221,10 @@ export default class BaseController {
       bank: 100
     };
 
-    const helpembed = new RichEmbed()
+    const helpembed = new MessageEmbed()
       .setDescription(`Profile ~ ${confMember.title}${confMember.name}`)
       // .setColor(config.color)
-      .setThumbnail(message.member.user.displayAvatarURL)
+      .setThumbnail(message.member.user.displayAvatarURL())
       .addField('description', `${confMember.description}`)
       .addField('balance', `cash: ${confMember.cash}$, bank: ${confMember.bank}`)
       .addField('level', `you are level ${confMember.level}`)
@@ -248,7 +248,7 @@ export default class BaseController {
       return message.reply('Please provide a number between 2 and 100 for the number of messages to delete.');
 
     // So we get our messages, and delete them. Simple enough, right?
-    const fetched = await message.channel.fetchMessages({ limit: deleteCount });
+    const fetched = await (await message.channel.messages.fetch({ limit: deleteCount }));
     return message.channel.bulkDelete(fetched)
       .catch(error => message.reply(`Couldn't delete messages because of: ${error}`));
   }
@@ -266,9 +266,9 @@ export default class BaseController {
     const urlFace = `https://crafatar.com/avatars/${player_uuid}.png`;
     const urlBody = `https://crafatar.com/renders/body/${player_uuid}.png`;
     // And we get the bot to say the thing
-    const serverembed = new RichEmbed()
+    const serverembed = new MessageEmbed()
       .setTitle(`Very cool title for profile: ${player_name}`)
-      .setAuthor(`MVP: ${player_name}`, message.member.user.displayAvatarURL)
+      .setAuthor(`MVP: ${player_name}`, message.member.user.displayAvatarURL())
       .setDescription(sayMessage)
       // .setColor(bot.config.color)
       .setThumbnail(urlFace)
@@ -279,10 +279,10 @@ export default class BaseController {
   }
 
   async serverinfo(message: Message): Promise<Message | Message[]> {
-    const serverembed = new RichEmbed()
+    const serverembed = new MessageEmbed()
       .setDescription('Server Information.')
       // .setColor(config.color)
-      .setThumbnail(message.guild.iconURL)
+      .setThumbnail(message.guild.iconURL())
       .addField('Server name', message.guild.name)
       .addField('Created on', message.guild.createdAt)
       .addField('You joined', message.member.joinedAt)

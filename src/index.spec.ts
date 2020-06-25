@@ -2,14 +2,15 @@ import { expect } from 'chai';
 import main from './index';
 import { DefaultConfig } from './app/app.config';
 import { FileSystem } from './app/filesystem';
-import { HomeApi } from './app/api/api.home';
+// import { HomeApi } from './app/api/api.home';
 import { Api } from './app/api/api';
 
 describe('index.js', () => {
   const fs = new FileSystem();
-  let mBot;
-  it('main() should exsist', () => {
+  it('main() should exsist and  return true', async () => {
     expect(main).to.exist;
+    const mBot = await main();
+    expect(mBot).to.true;
   });
   it('checkFile() should exsist', () => {
     expect(fs.exists).to.exist;
@@ -26,12 +27,8 @@ describe('index.js', () => {
   it('delete should exsist', () => {
     expect(fs.delete).to.exist;
   });
-  // it('main() should return true', async () => {
-  //   mBot = await main();
-  //   expect(mBot).to.true;
-  // });
-  it('check file "dlkfsjdslfs.fdskfh" should be false', async () => {
-    const result = await fs.exists('dlkfsjdslfs.fdskfh');
+  it('check file "_testfile" should be false', async () => {
+    const result = await fs.exists('_testfile');
     expect(result).to.be.false;
   });
   it('write file "myconfigTest.json" should be true', async () => {
@@ -68,11 +65,11 @@ describe('index.js', () => {
     expect(uuid).to.not.be.undefined;
     expect(uuid).to.be.length(32);
   });
-  it('api.home.getClimate() to return valid climate data', async () => {
+  /* it('api.home.getClimate() to return valid climate data', async () => {
     const climate = await new Api().home.getClimate(1).then(r => r.climate);
     expect(climate.temperature).not.to.be.null;
     expect(climate.humidity).not.to.be.null;
     expect(climate.pressure).not.to.be.null;
     expect(climate.altitude).not.to.be.null;
-  });
+  }); */
 });

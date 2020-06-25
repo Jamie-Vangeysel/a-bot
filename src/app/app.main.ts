@@ -38,7 +38,7 @@ export class aBot {
    */
   public async init(config: BotConfig) {
     this._bot = new Client({
-      disableEveryone: true // bot cannot use everyone, for security purpose. Will be re-enabled later.
+      disableMentions: "everyone" // bot cannot use everyone, for security purpose. Will be re-enabled later.
     });
 
     // load event listeners

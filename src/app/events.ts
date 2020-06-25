@@ -1,7 +1,7 @@
 import aBot from "./app.main";
 import dbGuild from "./models/guild";
 import BotConfig from "./models/bot-config";
-import { Presence, Guild, GuildMember, GuildChannel, TextChannel, Message, Collection, RichEmbed, Role, User } from "discord.js";
+import { Presence, Guild, GuildMember, GuildChannel, TextChannel, Message, Collection, MessageEmbed, Role, User } from "discord.js";
 import HomeController from "./controllers/home";
 import BaseController from "./controllers/base";
 import YoutubeController from "./controllers/youtube";
@@ -101,13 +101,13 @@ export class Events {
   }
 
   async readyEvent(bot: aBot): Promise<Presence> {
-    console.log(`Bot has started, with ${bot.client.users.size} users, in ${bot.client.channels.size} channels of ${bot.client.guilds.size} guilds.`);
+    console.log(`Bot has started, with ${bot.client.users.cache.size} users, in ${bot.client.channels.cache.size} channels of ${bot.client.guilds.cache.size} guilds.`);
     // options: WATCHING STREAMING PLAYING LISTENING
     await bot.client.user.setActivity("startup sequence", { type: "PLAYING" });
 
 
     // check if the guilds are in the database
-    bot.client.guilds.forEach(async (guild: Guild) => {
+    bot.client.guilds.cache.forEach(async (guild: Guild) => {
       const result = await new Promise((resolve, reject) => {
         dbGuild.findById(guild.id, (err, _dbguild) => {
           if (err) {
@@ -160,21 +160,21 @@ export class Events {
   }
 
   async presenceUpdateEvent(member: { old: GuildMember, new: GuildMember }): Promise<any> {
-    const generalChannel = member.new.guild.channels.find((channel: GuildChannel) => channel.name === 'general');
+    const generalChannel = member.new.guild.channels.cache.find((channel: GuildChannel) => channel.name === 'general');
 
     if (generalChannel && (generalChannel instanceof TextChannel)) {
       // if old presence has a game set, user is no longer playing
-      if (member.old.presence.game && member.old.presence.game !== member.new.presence.game) {
+      if (member.old.presence.activities[0] && member.old.presence.activities[0] !== member.new.presence.activities[0]) {
         try {
-          const timeplayed = (new Date().getTime() - member.old.presence.game.timestamps.start.getTime()) / 1000 / 60;
-          await generalChannel.send(`${member.new.displayName} is no longer playing ${member.old.presence.game.name} [${timeplayed.toFixed(2)}min].`);
+          const timeplayed = (new Date().getTime() - member.old.presence.activities[0].timestamps.start.getTime()) / 1000 / 60;
+          await generalChannel.send(`${member.new.displayName} is no longer playing ${member.old.presence.activities[0].name} [${timeplayed.toFixed(2)}min].`);
         } catch (err) {
           // console.error(err);
         }
       }
       // if new presence has a game set the user started playing
-      if (member.new.presence.game) {
-        return generalChannel.send(`${member.new.displayName} is now playing ${member.new.presence.game.name}.`);
+      if (member.new.presence.activities.length > 0) {
+        return generalChannel.send(`${member.new.displayName} is now playing ${member.new.presence.activities[0].name}.`);
       }
       // check if the new status does not equal the old status, because well ...
       /** [22:20] BOTaBot: Wraptor is now dnd.
@@ -194,13 +194,13 @@ export class Events {
 
   async guildMemberAddEvent(config: BotConfig, member: GuildMember): Promise<GuildMember> {
     // console.info(`${member.displayName} has joined the server.`);
-    const generalChannel = member.guild.channels.find((channel: GuildChannel) => channel.name === 'general');
+    const generalChannel = member.guild.channels.cache.find((channel: GuildChannel) => channel.name === 'general');
 
     if (generalChannel && (generalChannel instanceof TextChannel)) {
-      const joinedEmbed = new RichEmbed()
+      const joinedEmbed = new MessageEmbed()
         .setDescription(`${member.displayName} has joined the server.`)
         // .setColor(config.color)
-        .setThumbnail(member.user.displayAvatarURL)
+        .setThumbnail(member.user.displayAvatarURL())
         .addField('Welcome', `${member.displayName} has entred the server, Hi! :wave:`);
       await generalChannel.send(joinedEmbed);
     } else {
@@ -221,9 +221,9 @@ export class Events {
       bank: 0
     }); */
 
-    const role = member.guild.roles.find((role: Role) => role.name === 'new');
+    const role = member.guild.roles.cache.find((role: Role) => role.name === 'new');
     if (role) {
-      return member.addRole(role);
+      return member.roles.add(role);
     } else {
       // console.error('new role does not exist!');
       return;
@@ -231,13 +231,13 @@ export class Events {
   }
 
   async guildMemberRemoveEvent(config: BotConfig, member: GuildMember): Promise<Message | Message[]> {
-    const generalChannel = member.guild.channels.find((channel: GuildChannel) => channel.name === 'general');
+    const generalChannel = member.guild.channels.cache.find((channel: GuildChannel) => channel.name === 'general');
 
     if (generalChannel && (generalChannel instanceof TextChannel)) {
-      const joinedEmbed = new RichEmbed()
+      const joinedEmbed = new MessageEmbed()
         .setDescription(`${member.displayName} has left the server.`)
         // .setColor(config.color)
-        .setThumbnail(member.user.displayAvatarURL);
+        .setThumbnail(member.user.displayAvatarURL());
       return generalChannel.send(joinedEmbed);
     } else {
       // console.error('error while sending message in welcome chat!');
@@ -245,7 +245,7 @@ export class Events {
   }
 
   async guildBanAddEvent(config: BotConfig, guild: Guild, user: User): Promise<Message | Message[]> {
-    const generalChannel = guild.channels.find((channel: GuildChannel) => channel.name === 'general');
+    const generalChannel = guild.channels.cache.find((channel: GuildChannel) => channel.name === 'general');
 
     if (generalChannel && (generalChannel instanceof TextChannel)) {
       return generalChannel.send(`@${user.username} has been banned!`);
@@ -255,7 +255,7 @@ export class Events {
   }
 
   async guildBanRemoveEvent(config: BotConfig, guild: Guild, user: User): Promise<Message | Message[]> {
-    const generalChannel = guild.channels.find((channel: GuildChannel) => channel.name === 'general');
+    const generalChannel = guild.channels.cache.find((channel: GuildChannel) => channel.name === 'general');
 
     if (generalChannel && (generalChannel instanceof TextChannel)) {
       return generalChannel.send(`@${user.username} has been unbanned!`);

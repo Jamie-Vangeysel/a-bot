@@ -1,6 +1,6 @@
 import aBot from "../app.main";
 import { BotConfig } from "../models/bot-config";
-import { Message, RichEmbed, Collection } from "discord.js";
+import { Message, RichEmbed, Collection, GuildChannel, TextChannel, DMChannel, GroupDMChannel } from "discord.js";
 import { Api } from "../api/api";
 import { ResolvedUUID } from "../api/models/mojang";
 
@@ -65,6 +65,9 @@ export default class BaseController {
 
       case 'version':
         return await this.version(message);
+
+      case 'countdown':
+        return await this.countdown(message, args);
 
       case 'yt':
       case 'youtube':
@@ -167,6 +170,35 @@ export default class BaseController {
     // Now, time for a swift kick in the nuts!
     await member.kick(reason).catch(error => message.reply(`Sorry ${message.author} I couldn't kick because of : ${error}`));
     return message.reply(`${member.user.tag} has been kicked by ${message.author.tag} because: ${reason}`);
+  }
+
+  async countdown(message: Message, args: string[]): Promise<Message | Message[]> {
+    if (args.length < 1) {
+      return message.reply(`At least 1 argument {time}(XX:XX) is required`);
+    }
+    //read args => check if input is XX:XX and interval is set to 1m of higher
+    const date = new Date();
+    if (new RegExp(`[0-2][0-9]:[0-5][0-9]`).test(args[0])) {
+      const hours = parseInt(args[0].split(':')[0], 10);
+      const minutes = parseInt(args[0].split(':')[1], 10);
+
+      const target = new Date(date.getFullYear(), date.getMonth(), date.getDate(), hours, minutes);
+      this.doCountdown(message.channel, target, 60000);
+      return message.reply(`Started a countdown till ${hours}:${minutes} alerting each 60 seconds`);
+    } else {
+      return message.reply(`Time argument did not match regex \`/[0-2][0-9]:[0-5][0-9]/g\` got \`${args[0]}\``);
+    }
+  }
+
+  doCountdown(channel: TextChannel | DMChannel | GroupDMChannel, targetTime: Date, interval: number) {
+    const myInterval = setInterval(() => {
+      if (new Date() < targetTime) {
+        const milis = targetTime.getTime() - new Date().getTime();
+        channel.send(`${Math.round(milis / 60000)}m remaining`);
+      } else {
+        clearInterval(myInterval);
+      }
+    }, interval);
   }
 
   async ping(message: Message): Promise<Message | Message[]> {

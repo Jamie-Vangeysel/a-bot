@@ -26,12 +26,12 @@ export class Events {
       });
     }
 
-    if (config.checkFunctionanlity('reconnecting')) {
-      console.debug(`attachEventListeners() -- checkFunctionanlity('reconnecting')`);
-      bot.client.on('reconnecting', async () => {
-        //await  ReconnectingEvent.fire(bot.client);
-      });
-    }
+    // if (config.checkFunctionanlity('reconnecting')) {
+    //   console.debug(`attachEventListeners() -- checkFunctionanlity('reconnecting')`);
+    //   bot.client.on('reconnecting', async () => {
+    //     //await  ReconnectingEvent.fire(bot.client);
+    //   });
+    // }
 
     if (config.checkFunctionanlity('message')) {
       console.debug(`attachEventListeners() -- checkFunctionanlity('message')`);
@@ -42,8 +42,8 @@ export class Events {
 
     if (config.checkFunctionanlity('presenceUpdate')) {
       console.debug(`attachEventListeners() -- checkFunctionanlity('presenceUpdate')`);
-      bot.client.on('presenceUpdate', async (oldMember: GuildMember, newMember: GuildMember) => {
-        // await events.presenceUpdateEvent({ old: oldMember, new: newMember });
+      bot.client.on('presenceUpdate', async (oldPresence: Presence, newPresence: Presence) => {
+        // await events.presenceUpdateEvent({ old: oldPresence, new: newPresence });
       });
     }
 

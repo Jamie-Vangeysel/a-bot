@@ -1,6 +1,6 @@
 import aBot from "../app.main";
 import { BotConfig } from "../models/bot-config";
-import { Message, Collection, TextChannel, DMChannel, MessageEmbed } from "discord.js";
+import { Message, Collection, TextChannel, DMChannel, MessageEmbed, NewsChannel } from "discord.js";
 import { Api } from "../api/api";
 import { ResolvedUUID } from "../api/models/mojang";
 
@@ -193,7 +193,7 @@ export default class BaseController {
     }
   }
 
-  doCountdown(channel: TextChannel | DMChannel, targetTime: Date, interval: number) {
+  doCountdown(channel: TextChannel | DMChannel | NewsChannel, targetTime: Date, interval: number) {
     const myInterval = setInterval(() => {
       if (new Date() < targetTime) {
         const milis = targetTime.getTime() - new Date().getTime();

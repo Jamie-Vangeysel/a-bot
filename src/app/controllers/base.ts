@@ -66,6 +66,9 @@ export default class BaseController {
       case 'version':
         return await this.version(message);
 
+      case 'avatar':
+        return await this.avatar(message);
+
       case 'yt':
       case 'youtube':
         return await this._bot.controllers.youtube.handle(args.join(' '), message);
@@ -80,9 +83,9 @@ export default class BaseController {
       default:
         await message.delete();
         const newM = await message.channel.send(`Unknown command: '${this._config.prefix}${command}', type ${this._config.prefix}help for a list of available commands`);
-        if (newM instanceof Message) {
-          newM.delete({ timeout: 2000 });
-        }
+        // if (newM instanceof Message) {
+        //   newM.delete({ timeout: 2000 });
+        // }
         return newM;
     }
   }
@@ -153,7 +156,7 @@ export default class BaseController {
     // Let's first check if we have a member and if we can kick them!
     // message.mentions.members is a collection of people that have been mentioned, as GuildMembers.
     // We can also support getting the member by ID, which would be args[0]
-    let member = message.mentions.members.first() || await (await message.guild.members.fetch({ query: args[0] })).first();
+    let member = message.mentions.members.first();
     if (!member)
       return message.reply("Please mention a valid member of this server");
     if (!member.kickable)
@@ -200,6 +203,22 @@ export default class BaseController {
     return await message.channel.send(helpembed);
   }
 
+  async avatar(message: Message): Promise<Message | Message[]> {
+    // if no one is mentioned retrieve authors avatar
+    if (!message.mentions.users.size) {
+      return await message.channel.send(`Your avatar: <${message.author.displayAvatarURL({ format: "png", dynamic: true })}>`);
+    }
+
+    // list avatars of all mentioned users
+    const avatarList = message.mentions.users.map(user => {
+      return `${user.username}'s avatar: <${user.displayAvatarURL({ format: "png", dynamic: true })}>`;
+    });
+
+    // send the entire array of strings as a message
+    // by default, discord.js will `.join()` the array with `\n`
+    return await message.channel.send(avatarList);
+  }
+
   async purge(message: Message, args: string[]): Promise<Message | Message[] | Collection<string, Message>> {
     // This command removes all messages from all users in the channel, up to 100.
 
@@ -217,7 +236,7 @@ export default class BaseController {
 
     // So we get our messages, and delete them. Simple enough, right?
     const fetched = await (await message.channel.messages.fetch({ limit: deleteCount }));
-    return message.channel.bulkDelete(fetched)
+    return message.channel.bulkDelete(fetched, true)
       .catch(error => message.reply(`Couldn't delete messages because of: ${error}`));
   }
 

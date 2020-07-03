@@ -1,6 +1,6 @@
 /**
  * @interface:ConfigBot configuration interface
- * if [prefix] and [suffix] are used only [prefix] will work, if none are preset the bot will throw an error and use default 'a!'
+ * If no [prefix] is set the bot will throw an error and use default ';'
  * [enableFunctionality] this is mainly to be able to keep live environments up to date without enableing experimental features
  */
 export class BotConfig implements IBotConfig {
@@ -10,8 +10,6 @@ export class BotConfig implements IBotConfig {
   public token: string;
   // prefix for bot commands
   public prefix: string | null;
-  // suffix for bot commands
-  public suffix: string | null;
   // connection string for mongodb
   public dbConnection: string;
   // enable or disable certain functionality
@@ -25,7 +23,6 @@ export class BotConfig implements IBotConfig {
     this.googleApiKey = conf.googleApiKey;
     this.token = conf.token;
     this.prefix = conf.prefix;
-    this.suffix = conf.suffix;
     this.enabledFunctionality = conf.enabledFunctionality;
     this.version = conf.version;
   }
@@ -37,7 +34,7 @@ export class BotConfig implements IBotConfig {
       try {
         const configObj: IBotConfig = JSON.parse(configText);
         console.debug(`BotConfig.checkBuffer() -- buffer is JSON.`);
-        if (configObj && configObj.token && configObj.enabledFunctionality && configObj.version && (configObj.prefix || configObj.suffix) && configObj.dbConnection) {
+        if (configObj && configObj.token && configObj.enabledFunctionality && configObj.version && configObj.prefix && configObj.dbConnection) {
           console.debug(`BotConfig.checkBuffer() -- config has needed values.`);
           return new BotConfig(configObj);
         }
@@ -64,8 +61,6 @@ export interface IBotConfig {
   token: string;
   // prefix for bot commands
   prefix: string | null;
-  // suffix for bot commands
-  suffix: string | null;
   // connection string for mongodb
   dbConnection: string;
   // enable or disable certain functionality

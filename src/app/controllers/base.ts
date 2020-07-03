@@ -45,6 +45,9 @@ export default class BaseController {
       //     return message.reply("Sorry, you don't have permissions to do this!");
       //   return ConfigCommandHandler(bot, message, args);
 
+      case 'clear-chat':
+        return await this.clearChat(message);
+
       case 'kick':
         return await this.kick(message, args);
 
@@ -85,11 +88,7 @@ export default class BaseController {
 
       default:
         await message.delete();
-        const newM = await message.channel.send(`Unknown command: '${this._config.prefix}${command}', type ${this._config.prefix}help for a list of available commands`);
-        // if (newM instanceof Message) {
-        //   newM.delete({ timeout: 2000 });
-        // }
-        return newM;
+        return await message.channel.send(`Unknown command: '${this._config.prefix}${command}', type ${this._config.prefix}help for a list of available commands`);
     }
   }
 
@@ -101,6 +100,10 @@ export default class BaseController {
 
     // And we get the bot to say the thing: 
     return await message.reply(`You currently have ${confMember.cash}$ cash and ${confMember.bank}$ in the bank.`);
+  }
+
+  async clearChat(message: Message): Promise<Message | Message[]> {
+    return await message.channel.send(`\n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n _ _`);
   }
 
   async ban(message: Message, args: string[]): Promise<Message | Message[]> {
@@ -141,11 +144,11 @@ export default class BaseController {
       .setDescription('Commands List')
       // .setColor(config.color)
       .setThumbnail(this._bot.client.user.displayAvatarURL())
-      .addField(`${this._config.prefix}help`, 'Displays this message, use ```!help [command]``` to get help for specific commands if available')
+      .addField(`${this._config.prefix}help`, `Displays this message, use \`\`\`${this._config.prefix}help [command]\`\`\` to get help for specific commands if available`)
       .addField(`${this._config.prefix}botinfo`, 'Gives information about the bot.')
       .addField(`${this._config.prefix}serverinfo`, 'Gives information about the server')
       .addField(`${this._config.prefix}version`, 'Displays the current version of the bot.')
-      .addField('Suggestions for the bot?', 'Put your suggestions in #suggestions or send <@250591432975319043> a message!')
+      .addField('Suggestions for the bot?', 'Send <@250591432975319043> a dm!')
       .addField('Feature updates', 'Leveling and economy system');
     return await message.channel.send(helpembed);
   }

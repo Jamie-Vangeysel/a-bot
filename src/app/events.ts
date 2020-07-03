@@ -77,19 +77,21 @@ export class Events {
 
     if (config.checkFunctionanlity('guildCreate')) {
       console.debug(`attachEventListeners() -- checkFunctionanlity('guildCreate')`);
-      bot.client.on('guildCreate', (guild: Guild) => {
+      bot.client.on('guildCreate', async (guild: Guild) => {
         // This event triggers when the bot joins a guild.
         // console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
         // client.user.setActivity(`Serving ${client.guilds.size} servers`);
+        await bot.client.user.setActivity(`${bot.client.guilds.cache.size} Guilds`, { type: "WATCHING" });
       });
     }
 
     if (config.checkFunctionanlity('guildDelete')) {
       console.debug(`attachEventListeners() -- checkFunctionanlity('guildDelete')`);
-      bot.client.on('guildDelete', (guild: Guild) => {
+      bot.client.on('guildDelete', async (guild: Guild) => {
         // this event triggers when the bot is removed from a guild.
         // console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
         // client.user.setActivity(`Serving ${client.guilds.size} servers`);
+        await bot.client.user.setActivity(`${bot.client.guilds.cache.size} Guilds`, { type: "WATCHING" });
       });
     }
 

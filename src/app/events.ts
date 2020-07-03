@@ -143,7 +143,7 @@ export class Events {
         });
       }
     });
-    return bot.client.user.setActivity("guilds", { type: "WATCHING" });
+    return bot.client.user.setActivity(`${bot.client.guilds.cache.size} Guilds`, { type: "WATCHING" });
   }
 
   disconnectEvent(bot: aBot): void {

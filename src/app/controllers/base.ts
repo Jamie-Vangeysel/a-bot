@@ -68,7 +68,7 @@ export default class BaseController {
 
       case 'avatar':
         return await this.avatar(message);
-        
+
       case 'countdown':
         return await this.countdown(message, args);
 
@@ -126,7 +126,7 @@ export default class BaseController {
 
   async botinfo(message: Message): Promise<Message | Message[]> {
     const botembed = new MessageEmbed()
-      .setDescription('Bot made by JamieVangeysel')
+      .setDescription('Bot made by <@250591432975319043>')
       // .setColor(config.color)
       .setThumbnail(this._bot.client.user.displayAvatarURL())
       .addField('Botname', this._bot.client.user.username)

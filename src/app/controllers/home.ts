@@ -1,7 +1,7 @@
 import aBot from "../app.main";
 import { BotConfig } from "../models/bot-config";
 import { Message, MessageEmbed } from "discord.js";
-import { iHomeClimate, iHomeResponse, iHomeClimateResponse } from "../api/models/home";
+import { iHomeClimate, iHomeClimateResponse } from "../api/models/home";
 
 export default class HomeController {
   private _bot: aBot;
@@ -30,7 +30,7 @@ export default class HomeController {
         await message.delete();
         const newM = await message.channel.send(`Unknown command: '${this._config.prefix}home ${command}', type ${this._config.prefix}home help for a list of available commands`);
         if (newM instanceof Message) {
-          newM.delete({timeout: 2000});
+          newM.delete({ timeout: 2000 });
         }
         return newM;
     }

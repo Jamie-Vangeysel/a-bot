@@ -12,6 +12,7 @@ export class BotConfig implements IBotConfig {
   public prefix: string | null;
   // connection string for mongodb
   public dbConnection: string;
+  public mode: 'standalone' | 'shard';
   // enable or disable certain functionality
   public enabledFunctionality: {
     [key: string]: boolean
@@ -24,6 +25,7 @@ export class BotConfig implements IBotConfig {
     this.token = conf.token;
     this.prefix = conf.prefix;
     this.enabledFunctionality = conf.enabledFunctionality;
+    this.mode = conf.mode;
     this.version = conf.version;
   }
 
@@ -63,6 +65,7 @@ export interface IBotConfig {
   prefix: string | null;
   // connection string for mongodb
   dbConnection: string;
+  mode: 'standalone' | 'shard';
   // enable or disable certain functionality
   enabledFunctionality: {
     [key: string]: boolean

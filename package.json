@@ -23,7 +23,7 @@
   "author": "JamieVangeysel",
   "license": "MIT",
   "dependencies": {
-    "cross-fetch": "^3.0.5",
+    "cross-fetch": "^3.0.6",
     "discord.js": "^12.2.0",
     "mongoose": "^5.9.21"
   },

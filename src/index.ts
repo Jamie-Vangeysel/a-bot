@@ -44,7 +44,7 @@ const main = async (debug?: boolean): Promise<boolean> => {
         }
       }
 
-      resolve(bot?.config.token.length > 0);
+      resolve(bot?.config.token?.length > 0);
     } catch (err) {
       reject(err);
     }

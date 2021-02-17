@@ -1,5 +1,7 @@
 # aBot - Discord bot
 
+A simple Discord bot with basic eco functions and chat manipulation
+
 ## install required packages for development
 ```
 npm install
@@ -17,7 +19,7 @@ npm run start
 
 
 ## how to run on a server?
-the compiled source code is in the './dist folder' copy all contents and just run node index.js
+the compiled source code is in the `./dist` folder copy all contents and just run `node index.js`
 
 
 ## wanna invite this bot on your server?

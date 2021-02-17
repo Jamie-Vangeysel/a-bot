@@ -275,8 +275,11 @@ export default class BaseController {
 
     // So we get our messages, and delete them. Simple enough, right?
     const fetched = await (await message.channel.messages.fetch({ limit: deleteCount }));
-    return message.channel.bulkDelete(fetched, true)
-      .catch(error => message.reply(`Couldn't delete messages because of: ${error}`));
+    if (message.channel instanceof TextChannel || message.channel instanceof NewsChannel) {
+      return message.channel.bulkDelete(fetched, true)
+        .catch(error => message.reply(`Couldn't delete messages because of: ${error}`));
+    }
+    return message.reply('Cannot use bult delete in DMChannel.');
   }
 
   async say(message: Message, args: string[]): Promise<Message | Message[]> {

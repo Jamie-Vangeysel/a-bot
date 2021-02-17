@@ -282,10 +282,10 @@ export class Events {
     // check if the guilds are in the database
     bot.client.guilds.cache.forEach(async (guild: Guild) => {
       const result = await new Promise((resolve, reject) => {
-        dbGuild.findById(guild.id, (err, _dbguild) => {
+        dbGuild.findById(guild.id, undefined, undefined, (err, _dbguild) => {
           if (err) {
             console.error(err);
-            resolve();
+            resolve(null);
             return;
           }
           resolve(_dbguild);
@@ -308,7 +308,7 @@ export class Events {
           new dbGuild(newGuild).save((err) => {
             if (err) {
               console.error(err);
-              resolve();
+              resolve(null);
               return;
             }
             resolve('ok');

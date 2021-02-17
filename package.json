@@ -24,19 +24,19 @@
   "license": "MIT",
   "dependencies": {
     "cross-fetch": "^3.0.6",
-    "discord.js": "^12.2.0",
-    "mongoose": "^5.11.12"
+    "discord.js": "^12.5.1",
+    "mongoose": "^5.11.17"
   },
   "devDependencies": {
-    "@types/chai": "^4.2.11",
+    "@types/chai": "^4.2.15",
     "@types/mocha": "^5.2.7",
-    "@types/mongoose": "^5.7.29",
-    "@types/node": "^10.17.26",
+    "@types/mongoose": "^5.10.3",
+    "@types/node": "^10.17.52",
     "@types/typescript": "^2.0.0",
-    "@types/ws": "^7.2.6",
-    "chai": "^4.2.0",
+    "@types/ws": "^7.4.0",
+    "chai": "^4.3.0",
     "mocha": "^6.2.3",
     "ts-node": "^8.10.2",
-    "typescript": "^3.9.6"
+    "typescript": "^3.9.9"
   }
 }

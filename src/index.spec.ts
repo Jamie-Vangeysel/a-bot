@@ -7,10 +7,10 @@ import { Api } from './app/api/api';
 
 describe('index.js', () => {
   const fs = new FileSystem();
-  it('main() should exsist and  return true', async () => {
+  it('main() should exsist and return false', async () => {
     expect(main).to.exist;
     const mBot = await main();
-    expect(mBot).to.true;
+    expect(mBot).to.equal(false);
   });
   it('checkFile() should exsist', () => {
     expect(fs.exists).to.exist;

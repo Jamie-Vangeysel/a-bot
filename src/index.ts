@@ -33,16 +33,18 @@ const main = async (debug?: boolean): Promise<boolean> => {
         if (config) {
           bot = new aBot(config);
         }
-        resolve(bot?.config.token !== undefined);
       } else {
         // create file with default config attached
         const writeOk = await filesystem.writeFile('./config.json', Buffer.from(JSON.stringify(DefaultConfig)));
         if (writeOk) {
           bot = new aBot(new BotConfig(DefaultConfig));
-          resolve(bot.config.token !== undefined);
+        } else {
+          resolve(false);
+          return
         }
-        resolve(writeOk);
       }
+
+      resolve(bot?.config.token.length > 0);
     } catch (err) {
       reject(err);
     }

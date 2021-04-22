@@ -24,7 +24,7 @@
   "license": "MIT",
   "dependencies": {
     "cross-fetch": "^3.0.6",
-    "discord.js": "^12.5.1",
+    "discord.js": "^12.5.2",
     "mongoose": "^5.11.17"
   },
   "devDependencies": {
